@@ -11,11 +11,13 @@ typedef struct {
 Vector2D* mallocVector2D(int dim) {
     Vector2D* v2d = (Vector2D*)malloc(sizeof(Vector2D));
     if (v2d == NULL) {
+        printf("Failed to malloc Vector2D");
         return NULL;
     }
 
     v2d->v = (Vector**)malloc(dim * sizeof(Vector*));
     if (v2d->v == NULL) {
+        printf("Failed to malloc Vector2D's inner vectors");
         free(v2d);
         return NULL;
     }
@@ -23,6 +25,7 @@ Vector2D* mallocVector2D(int dim) {
     for (int i = 0; i < dim; ++i) {
         v2d->v[i] = mallocVector(dim);
         if (v2d->v[i] == NULL) {
+            printf("Failed to malloc Vector2D's inner vectors's values");
             return NULL;
         }
     }

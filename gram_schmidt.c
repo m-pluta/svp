@@ -12,11 +12,20 @@ typedef struct {
 Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
     Vector2D *mu = mallocVector2D(B->dim);
     if (mu == NULL) {
+        printf("Failed to malloc Vector2D: mu");
         return NULL;
     }
     Vector2D *Bs = mallocVector2D(B->dim);
     if (Bs == NULL) {
+        printf("Failed to malloc Vector2D: Bs");
         freeVector2D(mu);
+        return NULL;
+    }
+    Gram_Schmidt_Information* gs_info = malloc(sizeof(Gram_Schmidt_Information));
+    if (gs_info == NULL) {
+        printf("Failed to malloc Gram_Schmidt_Information: gs_info");
+        freeVector2D(mu);
+        freeVector2D(Bs);
         return NULL;
     }
 
@@ -35,12 +44,6 @@ Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
         }
     }
 
-    Gram_Schmidt_Information* gs_info = malloc(sizeof(Gram_Schmidt_Information));
-    if (gs_info == NULL) {
-        freeVector2D(mu);
-        freeVector2D(Bs);
-        return NULL;
-    }
     gs_info->mu = mu;
     gs_info->Bs = Bs;
 

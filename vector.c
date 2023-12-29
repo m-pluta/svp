@@ -9,10 +9,12 @@ typedef struct {
 Vector* mallocVector(int dim) {
     Vector* v = (Vector*)malloc(sizeof(Vector));
     if (v == NULL) {
+        printf("Failed to malloc Vector");
         return NULL;
     }
     v->e = (double*)malloc(dim * sizeof(double));
     if (v->e == NULL) {
+        printf("Failed to malloc Vector values");
         free(v);
         return NULL;
     }
