@@ -6,24 +6,118 @@ typedef struct {
     double *values;
 } Vector;
 
-void freeVector(Vector *vector) {
-    free(vector->values);
-    vector->values = NULL;
-    free(vector);
-    vector = NULL;
+Vector* mallocVector(int dimension) {
+    Vector* vector = (Vector*)malloc(sizeof(Vector));
+    if (vector == NULL) {
+        return NULL;
+    }
+    vector->values = (double*)malloc(dimension * sizeof(double));
+    if (vector->values == NULL) {
+        free(vector);
+        return NULL;
+    }
+    return vector;
 }
 
-void printVectors(Vector *vectors, int count) {
-    for (int i = 0; i < count; i++) {
-        printf("Vector %d: [", i + 1);
-        for (int j = 0; j < count; j++) {
-            printf("%.2lf", vectors[i].values[j]);
-            if (j < count - 1) {
-                printf(" ");
-            }
+void freeVector(Vector *vector) {
+    free(vector->values);
+    free(vector);
+}
+
+void printVector(const Vector *vector, int dimension) {
+    printf("Vector: ");
+    for (int i = 0; i < dimension; ++i) {
+        printf("%.2f", vector->values[i]);
+        if (i != dimension - 1) {
+            printf(" ");
         }
-        printf("]\n");
     }
+    printf("\n");
+}
+
+
+typedef struct {
+    Vector **vectors;
+    int dimension;
+} Basis;
+
+Basis* mallocBasis(int dimension) {
+    Basis* basis = (Basis*)malloc(sizeof(Basis));
+    if (basis == NULL) {
+        return NULL;
+    }
+
+    basis->vectors = (Vector**)malloc(dimension * sizeof(Vector*));
+    if (basis->vectors == NULL) {
+        free(basis);
+        return NULL;
+    }
+
+    for (int i = 0; i < dimension; ++i) {
+        basis->vectors[i] = mallocVector(dimension);
+        if (basis->vectors[i] == NULL) {
+            return NULL;
+        }
+    }
+
+    basis->dimension = dimension;
+    return basis;
+}
+
+void freeBasis(Basis *basis) {
+    int i;
+
+    for (i = 0; i < basis->dimension; ++i) {
+        free(basis->vectors[i]->values);
+        free(basis->vectors[i]);
+    }
+
+    free(basis->vectors);
+}
+
+void printBasis(const Basis *basis) {
+    int i, j;
+
+    printf("Basis Dimension: %d\n", basis->dimension);
+    
+    for (i = 0; i < basis->dimension; ++i) {
+        printf("Vector %d: ", i + 1);
+        for (j = 0; j < basis->dimension; ++j) {
+            printf("%.2f ", basis->vectors[i]->values[j]);
+        }
+        printf("\n");
+    }
+}
+
+int parseInput(Basis *basis, int num_args, char *args[]) {
+    int curr_vector = 0;
+    int curr_element = 0;
+
+    if (num_args - 1 != basis->dimension * basis->dimension) {
+        return 1;
+    }
+
+    for (int i = 1; i < num_args; i++) {
+        if (curr_vector >= basis->dimension && curr_element != 0) {
+            return 1;
+        }
+        
+        char* curr_arg = args[i];
+        printf("Input : %s\n", curr_arg);
+
+        if (curr_arg[0] == '[') {
+            curr_arg++;
+        }
+
+        basis->vectors[curr_vector]->values[curr_element++] = strtod(curr_arg, NULL);
+
+        if (curr_arg[strlen(curr_arg) - 1] == ']') {
+            curr_vector++;
+            curr_element = 0;
+        }
+    }
+
+    return 0;   
 }
 
 int main(int argc, char *argv[]) {
@@ -43,56 +137,23 @@ int main(int argc, char *argv[]) {
     }
     printf("N: %d\n", N);
 
-
-    // Parse all arguments
-    Vector *basis = malloc(N * sizeof(Vector));
-    if (basis == NULL) {
+    // Malloc the basis
+    Basis *B = mallocBasis(N);
+    if (B == NULL) {
         return 1;
     }
 
-
-    // // Instantiate a square matrix 3x3 that is the identity matrix
-    // for (int i = 0; i < N; i++) {
-    //     basis[i].values = malloc((N + 1) * sizeof(double));
-    //     if (basis[i].values == NULL) {
-    //         // Handle memory allocation error
-    //         return 1;
-    //     }
-    //     basis[i].values[0] = N;
-    //     for (int j = 1; j <= N; j++) {
-    //         if (i == j - 1) {
-    //             basis[i].values[j] = 1.0;
-    //         } else {
-    //             basis[i].values[j] = 0.0;
-    //         }
-    //     }
-    // }
-    // printVectors(basis, N);
-
-    int curr_vector = 0;
-    int curr_element = 0;
-
-    for (int i = 1; i < argc; i++) {
-        char* curr_arg = argv[i];
-
-        if (curr_arg[0] == '[') {
-            basis[curr_vector].values = malloc(N * sizeof(double));
-            if (basis[curr_vector].values == NULL) {
-                return 1;
-            }
-            curr_element = 0;
-            basis[curr_vector].values[curr_element++] = strtod(++curr_arg, NULL);
-            continue;
-        }
-        if (curr_arg[strlen(curr_arg) - 1] == ']') {
-            basis[curr_vector++].values[curr_element++] = strtod(curr_arg, NULL);
-            continue;
-        }
-
-        // vector.values[curr_element++] = strtod(curr_arg, NULL);
+    // Parse the input
+    int res = parseInput(B, argc, argv);
+    if (res == 1) {
+        freeBasis(B);
+        return 1;
     }
 
-    printVectors(basis, N);
+    // Print final basis and free allocated memory
+    printBasis(B);
+    freeBasis(B);
+    free(B);
 
     return 0;
 }
