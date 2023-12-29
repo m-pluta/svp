@@ -26,9 +26,11 @@ Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
             Bs->v[i]->e[j] = B->v[i]->e[j];
         }
         for (int k = 0; k < i; k++) {
-            mu->v[i]->e[k] = inner_product(B->v[i], B->v[k], B->dim) / inner_product(B->v[k], B->v[k], B->dim);
+            mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], B->dim) / inner_product(Bs->v[k], Bs->v[k], B->dim);
+            // printf("mu[i][k]: %.6f\n", mu->v[i]->e[k]);
             for (int j = 0; j < B->dim; j++) {
                 Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
+                // printf("Bs[i][j]: %.6f, %.6f, %.6f\n", Bs->v[i]->e[j], mu->v[i]->e[k], Bs->v[k]->e[j]);
             }
         }
     }

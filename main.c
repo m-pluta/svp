@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "vector2d.h"
-#include "gram_schmidt.h"
+#include "schorr_euchner.h"
 
 int parseInput(Vector2D *B, int num_args, char *args[]) {
     int curr_vector = 0;
@@ -19,7 +19,7 @@ int parseInput(Vector2D *B, int num_args, char *args[]) {
         }
         
         char* curr_arg = args[i];
-        printf("Input : %s\n", curr_arg);
+        // printf("Input : %s\n", curr_arg);
 
         if (curr_arg[0] == '[') {
             curr_arg++;
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    printf("N: %d\n", N);
+    // printf("N: %d\n", N);
 
     // Malloc the basis
     Vector2D *B = mallocVector2D(N);
@@ -69,15 +69,18 @@ int main(int argc, char *argv[]) {
     // Print final basis
     printVector2D(B);
 
-    Gram_Schmidt_Information *gs_info = gram_schmidt(B);
-    if (gs_info == NULL) {
-        return 1;
-    }
+    double result = schorr_euchner(B, 100000000000);
+    printf("%.20f\n", result);
+
+    // Gram_Schmidt_Information *gs_info = gram_schmidt(B);
+    // if (gs_info == NULL) {
+    //     return 1;
+    // }
     
-    printf("mu matrix");
-    printVector2D(gs_info->mu);
-    printf("Bs matrix");
-    printVector2D(gs_info->Bs);
+    // printf("mu matrix");
+    // printVector2D(gs_info->mu);
+    // printf("Bs matrix");
+    // printVector2D(gs_info->Bs);
 
     // Free allocated memory
     freeVector2D(B);
