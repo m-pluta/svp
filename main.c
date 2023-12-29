@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <vector.h>
 #include <vector2d.h>
 
 int parseInput(Vector2D *basis, int num_args, char *args[]) {

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 
 typedef struct {
@@ -26,14 +25,14 @@ void freeVector(Vector *vector) {
 }
 
 void printVector(const Vector *vector, int dimension) {
-    printf("Vector: ");
+    printf("Vector: [");
     for (int i = 0; i < dimension; ++i) {
-        printf("%.2f", vector->values[i]);
-        if (i != dimension - 1) {
+        if (i != 0) {
             printf(" ");
         }
+        printf("%.2f", vector->values[i]);
     }
-    printf("\n");
+    printf("]\n");
 }
 
 Vector* addVectors(const Vector *vector1, const Vector *vector2, const int dimension) {

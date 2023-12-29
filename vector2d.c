@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <vector.h>
 
@@ -49,10 +48,13 @@ void printVector2D(const Vector2D *basis) {
     printf("Vector2D Dimension: %d\n", basis->dimension);
     
     for (i = 0; i < basis->dimension; ++i) {
-        printf("Vector %d: ", i + 1);
+        printf("Vector %d: [", i + 1);
         for (j = 0; j < basis->dimension; ++j) {
-            printf("%.2f ", basis->vectors[i]->values[j]);
+            if (j != 0) {
+                printf(" ");
+            }
+            printf("%.2f", basis->vectors[i]->values[j]);
         }
-        printf("\n");
+        printf("]\n");
     }
 }

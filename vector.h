@@ -1,10 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 typedef struct {
     double *values;
 } Vector;
@@ -17,7 +13,5 @@ Vector* addVectors(const Vector *vector1, const Vector *vector2, const int dimen
 Vector* subVectors(const Vector *vector1, const Vector *vector2, const int dimension);
 double inner_product(const Vector *vector1, const Vector *vector2, const int dimension);
 double norm(const Vector *vector, const int dimension);
-
-
 
 #endif // VECTOR_H
