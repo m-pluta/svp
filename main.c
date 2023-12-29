@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <vector2d.h>
-#include <gram_schmidt.h>
+#include "vector2d.h"
+#include "gram_schmidt.h"
 
 int parseInput(Vector2D *B, int num_args, char *args[]) {
     int curr_vector = 0;

@@ -1,7 +1,7 @@
 #ifndef VECTOR2D_H
 #define VECTOR2D_H
 
-#include <vector.h>
+#include "vector.h"
 
 typedef struct {
     Vector **v;

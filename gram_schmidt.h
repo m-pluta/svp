@@ -1,7 +1,7 @@
 #ifndef GRAM_SCHMIDT_H
 #define GRAM_SCHMIDT_H
 
-#include <vector2d.h>
+#include "vector2d.h"
 
 typedef struct {
     Vector2D *mu;
