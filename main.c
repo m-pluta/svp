@@ -3,9 +3,9 @@
 #include <string.h>
 
 #include <vector.h>
-#include <basis.h>
+#include <vector2d.h>
 
-int parseInput(Basis *basis, int num_args, char *args[]) {
+int parseInput(Vector2D *basis, int num_args, char *args[]) {
     int curr_vector = 0;
     int curr_element = 0;
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     printf("N: %d\n", N);
 
     // Malloc the basis
-    Basis *B = mallocBasis(N);
+    Vector2D *B = mallocVector2D(N);
     if (B == NULL) {
         return 1;
     }
@@ -62,14 +62,14 @@ int main(int argc, char *argv[]) {
     // Parse the input
     int res = parseInput(B, argc, argv);
     if (res == 1) {
-        freeBasis(B);
+        freeVector2D(B);
         free(B);
         return 1;
     }
 
     // Print final basis and free allocated memory
-    printBasis(B);
-    freeBasis(B);
+    printVector2D(B);
+    freeVector2D(B);
     free(B);
 
     return 0;

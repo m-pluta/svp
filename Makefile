@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra
+CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm
 
 # List of source files
-SRCS = main.c vector.c basis.c
+SRCS = main.c vector.c vector2d.c
 
 # List of header files
-HDRS = vector.h basis.h
+HDRS = vector.h vector2d.h
 
 # List of object files
 OBJS = $(SRCS:.c=.o)
@@ -15,7 +15,7 @@ all: runme
 
 # Target to build the executable
 runme: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(CFLAGS)
 
 # Test Suite
 test: main.o tests/test.c
@@ -24,7 +24,7 @@ test: main.o tests/test.c
 
 # Rule to build object files from source files
 %.o: %.c $(HDRS)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 # Clean rule to remove generated files
 clean:

@@ -7,10 +7,10 @@
 typedef struct {
     Vector **vectors;
     int dimension;
-} Basis;
+} Vector2D;
 
-Basis* mallocBasis(int dimension) {
-    Basis* basis = (Basis*)malloc(sizeof(Basis));
+Vector2D* mallocVector2D(int dimension) {
+    Vector2D* basis = (Vector2D*)malloc(sizeof(Vector2D));
     if (basis == NULL) {
         return NULL;
     }
@@ -32,7 +32,7 @@ Basis* mallocBasis(int dimension) {
     return basis;
 }
 
-void freeBasis(Basis *basis) {
+void freeVector2D(Vector2D *basis) {
     int i;
 
     for (i = 0; i < basis->dimension; ++i) {
@@ -43,10 +43,10 @@ void freeBasis(Basis *basis) {
     free(basis->vectors);
 }
 
-void printBasis(const Basis *basis) {
+void printVector2D(const Vector2D *basis) {
     int i, j;
 
-    printf("Basis Dimension: %d\n", basis->dimension);
+    printf("Vector2D Dimension: %d\n", basis->dimension);
     
     for (i = 0; i < basis->dimension; ++i) {
         printf("Vector %d: ", i + 1);
