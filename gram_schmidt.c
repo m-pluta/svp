@@ -8,26 +8,26 @@ typedef struct {
     Vector2D *Bs;
 } Gram_Schmidt_Information;
 
-Gram_Schmidt_Information* gram_schmidt(Vector2D *basis) {
-    Vector2D *mu = mallocVector2D(basis->dimension);
+Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
+    Vector2D *mu = mallocVector2D(B->dim);
     if (mu == NULL) {
         return NULL;
     }
-    Vector2D *Bs = mallocVector2D(basis->dimension);
+    Vector2D *Bs = mallocVector2D(B->dim);
     if (Bs == NULL) {
         freeVector2D(mu);
         return NULL;
     }
 
-    for (int i = 0; i < basis->dimension; i++) {
-        for (int j = 0; j < basis->dimension; j++) {
-            mu->vectors[i]->values[j] = 0.0;
-            Bs->vectors[i]->values[j] = basis->vectors[i]->values[j];
+    for (int i = 0; i < B->dim; i++) {
+        for (int j = 0; j < B->dim; j++) {
+            mu->v[i]->e[j] = 0.0;
+            Bs->v[i]->e[j] = B->v[i]->e[j];
         }
         for (int k = 0; k < i; k++) {
-            mu->vectors[i]->values[k] = inner_product(basis->vectors[i], basis->vectors[k], basis->dimension) / inner_product(basis->vectors[k], basis->vectors[k], basis->dimension);
-            for (int j = 0; j < basis->dimension; j++) {
-                Bs->vectors[i]->values[j] -= mu->vectors[i]->values[k] * Bs->vectors[k]->values[j];
+            mu->v[i]->e[k] = inner_product(B->v[i], B->v[k], B->dim) / inner_product(B->v[k], B->v[k], B->dim);
+            for (int j = 0; j < B->dim; j++) {
+                Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
             }
         }
     }

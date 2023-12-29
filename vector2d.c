@@ -4,56 +4,51 @@
 #include <vector.h>
 
 typedef struct {
-    Vector **vectors;
-    int dimension;
+    Vector **v;
+    int dim;
 } Vector2D;
 
-Vector2D* mallocVector2D(int dimension) {
-    Vector2D* basis = (Vector2D*)malloc(sizeof(Vector2D));
-    if (basis == NULL) {
+Vector2D* mallocVector2D(int dim) {
+    Vector2D* v2d = (Vector2D*)malloc(sizeof(Vector2D));
+    if (v2d == NULL) {
         return NULL;
     }
 
-    basis->vectors = (Vector**)malloc(dimension * sizeof(Vector*));
-    if (basis->vectors == NULL) {
-        free(basis);
+    v2d->v = (Vector**)malloc(dim * sizeof(Vector*));
+    if (v2d->v == NULL) {
+        free(v2d);
         return NULL;
     }
 
-    for (int i = 0; i < dimension; ++i) {
-        basis->vectors[i] = mallocVector(dimension);
-        if (basis->vectors[i] == NULL) {
+    for (int i = 0; i < dim; ++i) {
+        v2d->v[i] = mallocVector(dim);
+        if (v2d->v[i] == NULL) {
             return NULL;
         }
     }
 
-    basis->dimension = dimension;
-    return basis;
+    v2d->dim = dim;
+    return v2d;
 }
 
-void freeVector2D(Vector2D *basis) {
-    int i;
-
-    for (i = 0; i < basis->dimension; ++i) {
-        free(basis->vectors[i]->values);
-        free(basis->vectors[i]);
+void freeVector2D(Vector2D *v2d) {
+    for (int i = 0; i < v2d->dim; ++i) {
+        free(v2d->v[i]->e);
+        free(v2d->v[i]);
     }
-
-    free(basis->vectors);
+    free(v2d->v);
 }
 
-void printVector2D(const Vector2D *basis) {
-    int i, j;
-
-    printf("Vector2D Dimension: %d\n", basis->dimension);
+void printVector2D(const Vector2D *v2d) {
+    printf("Vector2D Dimension: %d\n", v2d->dim);
     
-    for (i = 0; i < basis->dimension; ++i) {
+    for (int i = 0; i < v2d->dim; ++i) {
         printf("Vector %d: [", i + 1);
-        for (j = 0; j < basis->dimension; ++j) {
+        for (int j = 0; j < v2d->dim; ++j) {
             if (j != 0) {
                 printf(" ");
             }
-            printf("%.2f", basis->vectors[i]->values[j]);
+            printf("%.2f", v2d->v[i]->e[j]);
         }
         printf("]\n");
     }

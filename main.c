@@ -3,18 +3,18 @@
 #include <string.h>
 
 #include <vector2d.h>
-#include "gram_schmidt.h"
+#include <gram_schmidt.h>
 
-int parseInput(Vector2D *basis, int num_args, char *args[]) {
+int parseInput(Vector2D *B, int num_args, char *args[]) {
     int curr_vector = 0;
     int curr_element = 0;
 
-    if (num_args - 1 != basis->dimension * basis->dimension) {
+    if (num_args - 1 != B->dim * B->dim) {
         return 1;
     }
 
     for (int i = 1; i < num_args; i++) {
-        if (curr_vector >= basis->dimension && curr_element != 0) {
+        if (curr_vector >= B->dim && curr_element != 0) {
             return 1;
         }
         
@@ -25,7 +25,7 @@ int parseInput(Vector2D *basis, int num_args, char *args[]) {
             curr_arg++;
         }
 
-        basis->vectors[curr_vector]->values[curr_element++] = strtod(curr_arg, NULL);
+        B->v[curr_vector]->e[curr_element++] = strtod(curr_arg, NULL);
 
         if (curr_arg[strlen(curr_arg) - 1] == ']') {
             curr_vector++;
@@ -44,12 +44,11 @@ int main(int argc, char *argv[]) {
     }
 
     // Calculate size of first input vector
-    int N = 1;
-    for (int i = 1; i < argc; i++) {
-        if (argv[i][strlen(argv[i]) - 1] == ']') {
+    int N;
+    for (N = 1; N < argc; N++) {
+        if (argv[N][strlen(argv[N]) - 1] == ']') {
             break;
         }
-        N++;
     }
     printf("N: %d\n", N);
 

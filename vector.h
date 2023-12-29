@@ -2,16 +2,16 @@
 #define VECTOR_H
 
 typedef struct {
-    double *values;
+    double *e;
 } Vector;
 
-Vector* mallocVector(int dimension);
-void freeVector(Vector *vector);
-void printVector(const Vector *vector, int dimension);
+Vector* mallocVector(int dim);
+void freeVector(Vector *v);
+void printVector(const Vector *v, int dim);
 
-Vector* addVectors(const Vector *vector1, const Vector *vector2, const int dimension);
-Vector* subVectors(const Vector *vector1, const Vector *vector2, const int dimension);
-double inner_product(const Vector *vector1, const Vector *vector2, const int dimension);
-double norm(const Vector *vector, const int dimension);
+Vector* addVectors(const Vector *v1, const Vector *v2, const int dim);
+Vector* subVectors(const Vector *v1, const Vector *v2, const int dim);
+double inner_product(const Vector *v1, const Vector *v2, const int dim);
+double norm(const Vector *v, const int dim);
 
 #endif // VECTOR_H

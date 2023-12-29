@@ -3,69 +3,68 @@
 #include <math.h>
 
 typedef struct {
-    double *values;
+    double *e;
 } Vector;
 
-Vector* mallocVector(int dimension) {
-    Vector* vector = (Vector*)malloc(sizeof(Vector));
-    if (vector == NULL) {
+Vector* mallocVector(int dim) {
+    Vector* v = (Vector*)malloc(sizeof(Vector));
+    if (v == NULL) {
         return NULL;
     }
-    vector->values = (double*)malloc(dimension * sizeof(double));
-    if (vector->values == NULL) {
-        free(vector);
+    v->e = (double*)malloc(dim * sizeof(double));
+    if (v->e == NULL) {
+        free(v);
         return NULL;
     }
-    return vector;
+    return v;
 }
 
-void freeVector(Vector *vector) {
-    free(vector->values);
-    free(vector);
+void freeVector(Vector *v) {
+    free(v->e);
+    free(v);
 }
 
-void printVector(const Vector *vector, int dimension) {
+void printVector(const Vector *v, int dim) {
     printf("Vector: [");
-    for (int i = 0; i < dimension; ++i) {
+    for (int i = 0; i < dim; ++i) {
         if (i != 0) {
             printf(" ");
         }
-        printf("%.2f", vector->values[i]);
+        printf("%.2f", v->e[i]);
     }
     printf("]\n");
 }
 
-Vector* addVectors(const Vector *vector1, const Vector *vector2, const int dimension) {
-    Vector* result = mallocVector(dimension);
-    if (result == NULL) {
+Vector* addVectors(const Vector *v1, const Vector *v2, const int dim) {
+    Vector* res = mallocVector(dim);
+    if (res == NULL) {
         return NULL;
     }
-    for (int i = 0; i < dimension; i++) {
-        result->values[i] = vector1->values[i] + vector2->values[i];
+    for (int i = 0; i < dim; i++) {
+        res->e[i] = v1->e[i] + v2->e[i];
     }
-    return result;
+    return res;
 }
 
-Vector* subVectors(const Vector *vector1, const Vector *vector2, const int dimension) {
-    Vector* result = mallocVector(dimension);
-    if (result == NULL) {
+Vector* subVectors(const Vector *v1, const Vector *v2, const int dim) {
+    Vector* res = mallocVector(dim);
+    if (res == NULL) {
         return NULL;
     }
-    for (int i = 0; i < dimension; i++) {
-        result->values[i] = vector1->values[i] - vector2->values[i];
+    for (int i = 0; i < dim; i++) {
+        res->e[i] = v1->e[i] - v2->e[i];
     }
-    return result;
+    return res;
 }
 
-double inner_product(const Vector *vector1, const Vector *vector2, const int dimension) {
-    double result = 0;
-    for (int i = 0; i < dimension; i++) {
-        result += vector1->values[i] * vector2->values[i];
+double inner_product(const Vector *v1, const Vector *v2, const int dim) {
+    double res = 0;
+    for (int i = 0; i < dim; i++) {
+        res += v1->e[i] * v2->e[i];
     }
-    return result;
+    return res;
 }
 
-double norm(const Vector *vector, const int dimension) {
-    double innerProd = inner_product(vector, vector, dimension);
-    return sqrt(innerProd);
+double norm(const Vector *v, const int dim) {
+    return sqrt(inner_product(v, v, dim));
 }

@@ -8,6 +8,6 @@ typedef struct {
     Vector2D *Bs;
 } Gram_Schmidt_Information;
 
-Gram_Schmidt_Information* gram_schmidt(Vector2D *basis);
+Gram_Schmidt_Information* gram_schmidt(Vector2D *B);
 
 #endif
