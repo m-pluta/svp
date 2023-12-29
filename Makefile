@@ -1,23 +1,34 @@
-# Main variables
 CC = gcc
 CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra
 
-# Main runme
-all:  main.c
-	$(CC) -o runme main.c $(CFLAGS)
+# List of source files
+SRCS = main.c vector.c basis.c
+
+# List of header files
+HDRS = vector.h basis.h
+
+# List of object files
+OBJS = $(SRCS:.c=.o)
+
+# The main target
+all: runme
+
+# Target to build the executable
+runme: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
 # Test Suite
 test: main.o tests/test.c
 	$(CC) -o test tests/test.c main.o $(CFLAGS)
 	./test
 
-# Object files
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+# Rule to build object files from source files
+%.o: %.c $(HDRS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-
+# Clean rule to remove generated files
 clean:
-	rm -rf runme test *.o
+	rm -rf runme $(OBJS)
 
 run:
 	make all
