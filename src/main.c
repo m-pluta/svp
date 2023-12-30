@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     // Print final basis
     printVector2D(B);
 
-    double result = schorr_euchner(B, 100000000000);
+    double result = schorr_euchner(B);
     printf("%.20f\n", result);
 
     // Gram_Schmidt_Information *gs_info = gram_schmidt(B);

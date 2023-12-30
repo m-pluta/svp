@@ -2,10 +2,10 @@ CC = gcc
 CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -Ofast
 
 # List of source files
-SRCS = src/main.c src/vector.c src/vector2d.c src/gram_schmidt.c src/schorr_euchner.c
+SRCS = src/main.c src/vector.c src/vector2d.c src/gram_schmidt.c src/schorr_euchner.c src/bound.c
 
 # List of header files
-HDRS = src/vector.h src/vector2d.h src/gram_schmidt.h src/schorr_euchner.h
+HDRS = src/vector.h src/vector2d.h src/gram_schmidt.h src/schorr_euchner.h src/bound.h
 
 # List of object files
 OBJS = $(SRCS:.c=.o)

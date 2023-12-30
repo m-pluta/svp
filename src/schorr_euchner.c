@@ -5,9 +5,15 @@
 #include "gram_schmidt.h"
 #include "vector.h"
 #include "vector2d.h"
+#include "bound.h"
 
-double schorr_euchner(Vector2D *B, double R) {
+
+double schorr_euchner(Vector2D *B) {
     Gram_Schmidt_Information *gs_info = gram_schmidt(B);
+
+    double bound = lambda_1(gs_info->Bs);
+
+    printf("Bound: %.6f\n", bound);
 
     // printf("mu matrix");
     // printVector2D(gs_info->mu);
@@ -29,7 +35,7 @@ double schorr_euchner(Vector2D *B, double R) {
     }
     v[0] = 1;
 
-    double R_2 = R * R;
+    double R_2 = bound * bound;
     int k = 0;
     int last_non_zero = 0;
 
