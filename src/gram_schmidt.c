@@ -7,9 +7,15 @@
 typedef struct {
     Vector2D *mu;
     Vector2D *Bs;
-} Gram_Schmidt_Information;
+} GS_Info;
 
-Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
+void freeGSInfo(GS_Info *gs_info) {
+    freeVector2D(gs_info->mu);
+    freeVector2D(gs_info->Bs);
+    free(gs_info);
+}
+
+GS_Info* gram_schmidt(Vector2D *B) {
     Vector2D *mu = mallocVector2D(B->dim);
     if (mu == NULL) {
         printf("Failed to malloc Vector2D: mu");
@@ -21,7 +27,7 @@ Gram_Schmidt_Information* gram_schmidt(Vector2D *B) {
         freeVector2D(mu);
         return NULL;
     }
-    Gram_Schmidt_Information* gs_info = malloc(sizeof(Gram_Schmidt_Information));
+    GS_Info* gs_info = malloc(sizeof(GS_Info));
     if (gs_info == NULL) {
         printf("Failed to malloc Gram_Schmidt_Information: gs_info");
         freeVector2D(mu);

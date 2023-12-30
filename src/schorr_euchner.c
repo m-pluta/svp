@@ -9,7 +9,7 @@
 
 
 double schorr_euchner(Vector2D *B) {
-    Gram_Schmidt_Information *gs_info = gram_schmidt(B);
+    GS_Info *gs_info = gram_schmidt(B);
 
     double bound = lambda_1(gs_info->Bs);
 
@@ -26,7 +26,7 @@ double schorr_euchner(Vector2D *B) {
     double *w = calloc(B->dim, sizeof(double));
     if (gs_info == NULL || p == NULL || v == NULL || c == NULL || w == NULL) {
         printf("Failed to malloc gs_info, p, v, c, w");
-        free(gs_info);
+        freeGSInfo(gs_info);
         free(p);
         free(v);
         free(c);
@@ -58,7 +58,7 @@ double schorr_euchner(Vector2D *B) {
         } else {
             k += 1;
             if (k == B->dim) {
-                free(gs_info);
+                freeGSInfo(gs_info);
                 free(p);
                 free(v);
                 free(c);

@@ -6,8 +6,9 @@
 typedef struct {
     Vector2D *mu;
     Vector2D *Bs;
-} Gram_Schmidt_Information;
+} GS_Info;
 
-Gram_Schmidt_Information* gram_schmidt(Vector2D *B);
+void freeGSInfo(GS_Info *gs_info);
+GS_Info* gram_schmidt(Vector2D *B);
 
 #endif

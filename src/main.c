@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     double result = schorr_euchner(B);
     printf("%.20f\n", result);
 
-    // Gram_Schmidt_Information *gs_info = gram_schmidt(B);
+    // GS_Info *gs_info = gram_schmidt(B);
     // if (gs_info == NULL) {
     //     return 1;
     // }
@@ -89,7 +89,6 @@ int main(int argc, char *argv[]) {
 
     // Free allocated memory
     freeVector2D(B);
-    free(B);
 
     return 0;
 }

@@ -36,10 +36,10 @@ Vector2D* mallocVector2D(int dim) {
 
 void freeVector2D(Vector2D *v2d) {
     for (int i = 0; i < v2d->dim; ++i) {
-        free(v2d->v[i]->e);
-        free(v2d->v[i]);
+        freeVector(v2d->v[i]);
     }
     free(v2d->v);
+    free(v2d);
 }
 
 void printVector2D(const Vector2D *v2d) {
