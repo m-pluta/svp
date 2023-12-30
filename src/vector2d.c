@@ -51,7 +51,7 @@ void printVector2D(const Vector2D *v2d) {
             if (j != 0) {
                 printf(" ");
             }
-            printf("%.2f", v2d->v[i]->e[j]);
+            printf("%8.4f", v2d->v[i]->e[j]);
         }
         printf("]\n");
     }

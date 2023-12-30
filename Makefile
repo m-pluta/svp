@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -Ofast
+CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -O3
 
 # List of source files
 SRCS = src/main.c src/vector.c src/vector2d.c src/gram_schmidt.c src/schorr_euchner.c src/bound.c src/lll.c

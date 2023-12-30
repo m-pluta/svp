@@ -73,13 +73,14 @@ int main(int argc, char *argv[]) {
     }
 
     // Print final basis
-    printf("Initial basis");
+    printf("Initial basis\n");
     printVector2D(B);
 
     LLL(B);
 
+    printf("Final basis\n");
     printVector2D(B);
-    printf("Final basis");
+    
 
     // double result = schorr_euchner(B);
     // printf("%.20f\n", result);

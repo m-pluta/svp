@@ -32,7 +32,7 @@ void printVector(const Vector *v, int dim) {
         if (i != 0) {
             printf(" ");
         }
-        printf("%.2f", v->e[i]);
+        printf("%8.4f", v->e[i]);
     }
     printf("]\n");
 }
