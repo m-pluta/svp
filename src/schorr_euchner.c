@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <gram_schmidt.h>
-#include <vector.h>
-#include <vector2d.h>
+#include "gram_schmidt.h"
+#include "vector.h"
+#include "vector2d.h"
 
 double schorr_euchner(Vector2D *B, double R) {
     Gram_Schmidt_Information *gs_info = gram_schmidt(B);
