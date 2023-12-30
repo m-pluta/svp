@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    // printf("N: %d\n", N);
+    printf("N: %d\n", N);
 
     // Malloc the basis
     Vector2D *B = mallocVector2D(N);
@@ -72,28 +72,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Print final basis
-    printf("Initial basis\n");
-    printVector2D(B);
-
     LLL(B);
 
-    printf("Final basis\n");
-    printVector2D(B);
-    
+    double result;
+    if (N > 4) {
+        result = schorr_euchner(B);
+    } else {
+        result = norm(B->v[0], B->dim);
+        for (int i = 1; i < B->dim; i++) {
+            double temp = norm(B->v[i], B->dim);
+            if (temp < result) {
+                result = temp;
+            }
+        }
+    }
 
-    // double result = schorr_euchner(B);
-    // printf("%.20f\n", result);
-
-    // GS_Info *gs_info = gram_schmidt(B);
-    // if (gs_info == NULL) {
-    //     return 1;
-    // }
-    
-    // printf("mu matrix");
-    // printVector2D(gs_info->mu);
-    // printf("Bs matrix");
-    // printVector2D(gs_info->Bs);
+    printf("%.10f\n", result);
 
     // Free allocated memory
     freeVector2D(B);
