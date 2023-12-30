@@ -7,63 +7,55 @@
 
 #define max_int(x,y) (((x) >= (y)) ? (x) : (y))
 
-void update_bk(Vector *bk, int mu, Vector *bj, int dim) {
+// Computes B_k = B_k - mu * B_j
+void update_bk(Vector *B_k, int mu, Vector *B_j, int dim) {
     for (int i = 0; i < dim; i++) {
-        bk->e[i] -= mu * bj->e[i];
+        B_k->e[i] -= mu * B_j->e[i];
     }
 }
 
 
 void LLL(Vector2D *B) {
+    // Threshold
     float delta = 0.75;
 
+    // Compute Initial GS_info
     GS_Info *gs_info = gram_schmidt(B);
 
     int k = 1;
-    
     while (k < B->dim) {
         for (int j = k - 1; j >= 0; j--) {
-            double rounded_mu = round(gs_info->mu->v[k]->e[j]);
-            if (rounded_mu == 0.0) {
+            double mu_rounded = round(gs_info->mu->v[k]->e[j]);
+            // If mu_rounded == 0, then skip pointless computation
+            if (mu_rounded == 0.0) {
                 continue;
             }
-            // if (rounded_mu > 1.0 || rounded_mu < -1.0) {
-            //     printf("Basis: \n");
-            //     printVector2D(B);
-            //     printf("k: %d\n", k);
-            //     printf("j: %d\nB[k]: ", j);
-            //     printVector(B->v[k], B->dim);
-            //     printf("Rounded mu: %.4f\nB[j]: ", rounded_mu);
-            //     printVector(B->v[j], B->dim);
-            // }
-            if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
-                update_bk(B->v[k], rounded_mu, B->v[j], B->dim);
-            }
-            // if (rounded_mu > 1.0 || rounded_mu < -1.0) {
-            //     printf("Before\n");
-            //     printVector2D(gs_info->mu);
-            // }
 
-            gs_info->mu->v[k]->e[j] -= rounded_mu;
-            for (int i = j - 1; i >= 0; i--) {
-                gs_info->mu->v[k]->e[j] -= rounded_mu * gs_info->mu->v[k - 1]->e[j];
+            // Update B_k
+            if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
+                update_bk(B->v[k], mu_rounded, B->v[j], B->dim);
             }
-            
-            // if (rounded_mu > 1.0 || rounded_mu < -1.0) {
-            //     printf("After\n");
-            //     printVector2D(gs_info->mu);
-            // }
+
+            // Update mu values without recomputing GS_info
+            gs_info->mu->v[k]->e[j] -= mu_rounded;
+            for (int i = j - 1; i >= 0; i--) {
+                gs_info->mu->v[k]->e[j] -= mu_rounded * gs_info->mu->v[k - 1]->e[j];
+            }
         }
         if (inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], B->dim) > (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1])) * inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], B->dim)) {
+            // Go to next vector in basis
             k += 1;
         } else {
+            // Swap B_k and B_k-1
             Vector *temp = B->v[k];
             B->v[k] = B->v[k-1];
             B->v[k-1] = temp;
 
+            // Recompute GS_info
             freeGSInfo(gs_info);
             gs_info = gram_schmidt(B);
 
+            // Next k
             k = max_int(k-1, 1);
         }
     }
