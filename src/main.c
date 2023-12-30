@@ -4,6 +4,7 @@
 
 #include "vector2d.h"
 #include "schorr_euchner.h"
+#include "lll.h"
 
 int parseInput(Vector2D *B, int num_args, char *args[]) {
     int curr_vector = 0;
@@ -72,10 +73,16 @@ int main(int argc, char *argv[]) {
     }
 
     // Print final basis
+    printf("Initial basis");
     printVector2D(B);
 
-    double result = schorr_euchner(B);
-    printf("%.20f\n", result);
+    LLL(B);
+
+    printVector2D(B);
+    printf("Final basis");
+
+    // double result = schorr_euchner(B);
+    // printf("%.20f\n", result);
 
     // GS_Info *gs_info = gram_schmidt(B);
     // if (gs_info == NULL) {
