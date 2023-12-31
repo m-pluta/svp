@@ -82,19 +82,7 @@ int main(int argc, char *argv[]) {
     }
 
     LLL(B, N);
-
-    double result;
-    if (N > 4) {
-        result = schorr_euchner(B, N);
-    } else {
-        result = norm(B->v[0], N);
-        for (int i = 1; i < N; i++) {
-            double temp = norm(B->v[i], N);
-            if (temp < result) {
-                result = temp;
-            }
-        }
-    }
+    double result = schorr_euchner(B, N);
 
     writeResultToFile(result);
 
