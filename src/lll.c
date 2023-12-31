@@ -25,9 +25,9 @@ void LLL(Vector2D *B, const int dim) {
     int k = 1;
     while (k < dim) {
         for (int j = k - 1; j >= 0; j--) {
-            double mu_rounded = round(gs_info->mu->v[k]->e[j]);
+            double mu_rounded = (int) round(gs_info->mu->v[k]->e[j]);
             // If mu_rounded == 0, then skip pointless computation
-            if (mu_rounded == 0.0) {
+            if (mu_rounded == 0) {
                 continue;
             }
 
