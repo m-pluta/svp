@@ -46,7 +46,7 @@ void printVector2D(const Vector2D *v2d) {
     printf("Vector2D Dimension: %d\n", v2d->dim);
     
     for (int i = 0; i < v2d->dim; ++i) {
-        printf("Vector %d: [", i + 1);
+        printf("Vector %2.d: [", i + 1);
         for (int j = 0; j < v2d->dim; ++j) {
             if (j != 0) {
                 printf(" ");
