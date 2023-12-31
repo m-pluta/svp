@@ -9,6 +9,6 @@ typedef struct {
 } GS_Info;
 
 void freeGSInfo(GS_Info *gs_info);
-GS_Info* gram_schmidt(Vector2D *B);
+GS_Info* gram_schmidt(const Vector2D *B);
 
 #endif

@@ -15,7 +15,7 @@ void freeGSInfo(GS_Info *gs_info) {
     free(gs_info);
 }
 
-GS_Info* gram_schmidt(Vector2D *B) {
+GS_Info* gram_schmidt(const Vector2D *B) {
     Vector2D *mu = mallocVector2D(B->dim);
     if (mu == NULL) {
         printf("Failed to malloc Vector2D: mu");

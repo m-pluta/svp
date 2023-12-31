@@ -5,9 +5,9 @@ typedef struct {
     double *e;
 } Vector;
 
-Vector* mallocVector(int dim);
+Vector* mallocVector(const int dim);
 void freeVector(Vector *v);
-void printVector(const Vector *v, int dim);
+void printVector(const Vector *v, const int dim);
 
 Vector* addVectors(const Vector *v1, const Vector *v2, const int dim);
 Vector* subVectors(const Vector *v1, const Vector *v2, const int dim);

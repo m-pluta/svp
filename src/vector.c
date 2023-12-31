@@ -6,7 +6,7 @@ typedef struct {
     double *e;
 } Vector;
 
-Vector* mallocVector(int dim) {
+Vector* mallocVector(const int dim) {
     Vector* v = (Vector*)malloc(sizeof(Vector));
     if (v == NULL) {
         printf("Failed to malloc Vector");
@@ -26,7 +26,7 @@ void freeVector(Vector *v) {
     free(v);
 }
 
-void printVector(const Vector *v, int dim) {
+void printVector(const Vector *v, const int dim) {
     printf("Vector: [");
     for (int i = 0; i < dim; ++i) {
         if (i != 0) {

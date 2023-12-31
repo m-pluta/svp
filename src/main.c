@@ -6,7 +6,7 @@
 #include "schorr_euchner.h"
 #include "lll.h"
 
-int parseInput(Vector2D *B, int num_args, char *args[]) {
+int parseInput(Vector2D *B, const int num_args, char *args[]) {
     int curr_vector = 0;
     int curr_element = 0;
 
