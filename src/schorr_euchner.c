@@ -14,11 +14,6 @@ double schorr_euchner(const Vector2D *B) {
 
     // printf("Bound: %.6f\n", bound);
 
-    // printf("mu matrix");
-    // printVector2D(gs_info->mu);
-    // printf("Bs matrix");
-    // printVector2D(gs_info->Bs);
-
     double *p = calloc(B->dim + 1, sizeof(double));
     double *v = calloc(B->dim, sizeof(double));
     double *c = calloc(B->dim, sizeof(double));
