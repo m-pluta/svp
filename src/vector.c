@@ -35,28 +35,6 @@ void printVector(const Vector *v, const int dim) {
     printf("]\n");
 }
 
-Vector* addVectors(const Vector *v1, const Vector *v2, const int dim) {
-    Vector* res = mallocVector(dim);
-    if (res == NULL) {
-        return NULL;
-    }
-    for (int i = 0; i < dim; i++) {
-        res->e[i] = v1->e[i] + v2->e[i];
-    }
-    return res;
-}
-
-Vector* subVectors(const Vector *v1, const Vector *v2, const int dim) {
-    Vector* res = mallocVector(dim);
-    if (res == NULL) {
-        return NULL;
-    }
-    for (int i = 0; i < dim; i++) {
-        res->e[i] = v1->e[i] - v2->e[i];
-    }
-    return res;
-}
-
 double inner_product(const Vector *v1, const Vector *v2, const int dim) {
     double res = 0;
     for (int i = 0; i < dim; i++) {
