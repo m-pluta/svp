@@ -8,7 +8,7 @@
 #define max_int(x,y) (((x) >= (y)) ? (x) : (y))
 
 // Computes B_k = B_k - mu * B_j
-void update_bk(Vector *B_k, const int mu, const Vector *B_j, const int dim) {
+void update_bk(Vector *B_k, int mu, Vector *B_j, int dim) {
     for (int i = 0; i < dim; i++) {
         B_k->e[i] -= mu * B_j->e[i];
     }

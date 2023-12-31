@@ -5,13 +5,13 @@ typedef struct {
     double *e;
 } Vector;
 
-Vector* mallocVector(const int dim);
+Vector* mallocVector(int dim);
 void freeVector(Vector *v);
-void printVector(const Vector *v, const int dim);
+void printVector(Vector *v, int dim);
 
-Vector* addVectors(const Vector *v1, const Vector *v2, const int dim);
-Vector* subVectors(const Vector *v1, const Vector *v2, const int dim);
-double inner_product(const Vector *v1, const Vector *v2, const int dim);
-double norm(const Vector *v, const int dim);
+Vector* addVectors(Vector *v1, Vector *v2, int dim);
+Vector* subVectors(Vector *v1, Vector *v2, int dim);
+double inner_product(Vector *v1, Vector *v2, int dim);
+double norm(Vector *v, int dim);
 
 #endif // VECTOR_H

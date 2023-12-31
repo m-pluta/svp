@@ -8,7 +8,7 @@ typedef struct {
     int dim;
 } Vector2D;
 
-Vector2D* mallocVector2D(const int dim) {
+Vector2D* mallocVector2D(int dim) {
     Vector2D* v2d = (Vector2D*)malloc(sizeof(Vector2D));
     if (v2d == NULL) {
         printf("Failed to malloc Vector2D");
@@ -42,7 +42,7 @@ void freeVector2D(Vector2D *v2d) {
     free(v2d);
 }
 
-void printVector2D(const Vector2D *v2d) {
+void printVector2D(Vector2D *v2d) {
     printf("Vector2D Dimension: %d\n", v2d->dim);
     
     for (int i = 0; i < v2d->dim; ++i) {

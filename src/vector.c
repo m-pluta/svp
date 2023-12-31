@@ -6,7 +6,7 @@ typedef struct {
     double *e;
 } Vector;
 
-Vector* mallocVector(const int dim) {
+Vector* mallocVector(int dim) {
     Vector* v = (Vector*)malloc(sizeof(Vector));
     if (v == NULL) {
         printf("Failed to malloc Vector");
@@ -26,7 +26,7 @@ void freeVector(Vector *v) {
     free(v);
 }
 
-void printVector(const Vector *v, const int dim) {
+void printVector(Vector *v, int dim) {
     printf("Vector: [");
     for (int i = 0; i < dim; ++i) {
         if (i != 0) {
@@ -37,7 +37,7 @@ void printVector(const Vector *v, const int dim) {
     printf("]\n");
 }
 
-Vector* addVectors(const Vector *v1, const Vector *v2, const int dim) {
+Vector* addVectors(Vector *v1, Vector *v2, int dim) {
     Vector* res = mallocVector(dim);
     if (res == NULL) {
         return NULL;
@@ -48,7 +48,7 @@ Vector* addVectors(const Vector *v1, const Vector *v2, const int dim) {
     return res;
 }
 
-Vector* subVectors(const Vector *v1, const Vector *v2, const int dim) {
+Vector* subVectors(Vector *v1, Vector *v2, int dim) {
     Vector* res = mallocVector(dim);
     if (res == NULL) {
         return NULL;
@@ -59,7 +59,7 @@ Vector* subVectors(const Vector *v1, const Vector *v2, const int dim) {
     return res;
 }
 
-double inner_product(const Vector *v1, const Vector *v2, const int dim) {
+double inner_product(Vector *v1, Vector *v2, int dim) {
     double res = 0;
     for (int i = 0; i < dim; i++) {
         res += v1->e[i] * v2->e[i];
@@ -67,6 +67,6 @@ double inner_product(const Vector *v1, const Vector *v2, const int dim) {
     return res;
 }
 
-double norm(const Vector *v, const int dim) {
+double norm(Vector *v, int dim) {
     return sqrt(inner_product(v, v, dim));
 }
