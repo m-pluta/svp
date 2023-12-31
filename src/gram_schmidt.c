@@ -4,10 +4,7 @@
 #include "vector.h"
 #include "vector2d.h"
 
-typedef struct {
-    Vector2D *mu;
-    Vector2D *Bs;
-} GS_Info;
+#include "gram_schmidt.h"
 
 void freeGSInfo(GS_Info *gs_info) {
     freeVector2D(gs_info->mu);

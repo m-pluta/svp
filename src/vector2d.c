@@ -2,11 +2,7 @@
 #include <stdlib.h>
 
 #include "vector.h"
-
-typedef struct {
-    Vector **v;
-    int dim;
-} Vector2D;
+#include "vector2d.h"
 
 Vector2D* mallocVector2D(const int dim) {
     Vector2D* v2d = (Vector2D*)malloc(sizeof(Vector2D));

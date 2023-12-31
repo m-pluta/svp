@@ -7,7 +7,6 @@
 #include "vector2d.h"
 #include "bound.h"
 
-
 double schorr_euchner(const Vector2D *B) {
     GS_Info *gs_info = gram_schmidt(B);
 

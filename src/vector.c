@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-typedef struct {
-    double *e;
-} Vector;
+#include "vector.h"
 
 Vector* mallocVector(const int dim) {
     Vector* v = (Vector*)malloc(sizeof(Vector));
