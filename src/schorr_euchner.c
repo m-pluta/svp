@@ -33,8 +33,14 @@ double schorr_euchner(const Vector2D *B, const int dim) {
     int k = 0;
     int last_non_zero = 0;
 
+    double *inner_products = malloc(dim * sizeof(double));
+
+    for (int i = 0; i < dim; i++) {
+        inner_products[i] = inner_product(gs_info->Bs->v[i], gs_info->Bs->v[i], dim);
+    }
+
     for(;;) {
-        p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k],dim);
+        p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_products[k];
 
         if (p[k] < R_2) {
             if (k == 0) {
@@ -57,6 +63,7 @@ double schorr_euchner(const Vector2D *B, const int dim) {
                 free(v);
                 free(c);
                 free(w);
+                free(inner_products);
                 return sqrt(R_2);
             }
 
