@@ -39,6 +39,16 @@ int parseInput(Vector2D *B, const int num_args, char *args[]) {
     return 0;   
 }
 
+void writeResultToFile(const double result) {
+    FILE *file = fopen("result.txt", "w");
+    if (file != NULL) {
+        fprintf(file, "%lf", result);
+        fclose(file);
+    } else {
+        perror("Unable to open 'result.txt' for writing");
+    }
+}
+
 int main(int argc, char *argv[]) {
     // Check number of arguments
     if (argc == 1) {
@@ -54,7 +64,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    printf("N: %d\n", N);
+    // printf("N: %d\n", N);
 
     // Malloc the basis
     Vector2D *B = mallocVector2D(N);
@@ -87,7 +97,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("%.10f\n", result);
+    writeResultToFile(result);
 
     // Free allocated memory
     freeVector2D(B);

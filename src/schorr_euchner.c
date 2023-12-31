@@ -13,7 +13,7 @@ double schorr_euchner(const Vector2D *B) {
 
     double bound = lambda_1(gs_info->Bs);
 
-    printf("Bound: %.6f\n", bound);
+    // printf("Bound: %.6f\n", bound);
 
     // printf("mu matrix");
     // printVector2D(gs_info->mu);
