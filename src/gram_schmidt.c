@@ -6,41 +6,41 @@
 
 #include "gram_schmidt.h"
 
-void freeGSInfo(GS_Info *gs_info) {
-    freeVector2D(gs_info->mu);
-    freeVector2D(gs_info->Bs);
+void freeGSInfo(GS_Info *gs_info, const int dim) {
+    freeVector2D(gs_info->mu, dim);
+    freeVector2D(gs_info->Bs, dim);
     free(gs_info);
 }
 
-GS_Info* gram_schmidt(const Vector2D *B) {
-    Vector2D *mu = mallocVector2D(B->dim);
+GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
+    Vector2D *mu = mallocVector2D(dim);
     if (mu == NULL) {
         printf("Failed to malloc Vector2D: mu");
         return NULL;
     }
-    Vector2D *Bs = mallocVector2D(B->dim);
+    Vector2D *Bs = mallocVector2D(dim);
     if (Bs == NULL) {
         printf("Failed to malloc Vector2D: Bs");
-        freeVector2D(mu);
+        freeVector2D(mu, dim);
         return NULL;
     }
     GS_Info* gs_info = malloc(sizeof(GS_Info));
     if (gs_info == NULL) {
         printf("Failed to malloc Gram_Schmidt_Information: gs_info");
-        freeVector2D(mu);
-        freeVector2D(Bs);
+        freeVector2D(mu, dim);
+        freeVector2D(Bs, dim);
         return NULL;
     }
 
-    for (int i = 0; i < B->dim; i++) {
-        for (int j = 0; j < B->dim; j++) {
+    for (int i = 0; i < dim; i++) {
+        for (int j = 0; j < dim; j++) {
             mu->v[i]->e[j] = 0.0;
             Bs->v[i]->e[j] = B->v[i]->e[j];
         }
         for (int k = 0; k < i; k++) {
-            mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], B->dim) / inner_product(Bs->v[k], Bs->v[k], B->dim);
+            mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], dim) / inner_product(Bs->v[k], Bs->v[k], dim);
             // printf("mu[i][k]: %.6f\n", mu->v[i]->e[k]);
-            for (int j = 0; j < B->dim; j++) {
+            for (int j = 0; j < dim; j++) {
                 Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
                 // printf("Bs[i][j]: %.6f, %.6f, %.6f\n", Bs->v[i]->e[j], mu->v[i]->e[k], Bs->v[k]->e[j]);
             }

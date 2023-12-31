@@ -5,11 +5,10 @@
 
 typedef struct {
     Vector **v;
-    int dim;
 } Vector2D;
 
 Vector2D* mallocVector2D(const int dim);
-void freeVector2D(Vector2D *v2d);
-void printVector2D(const Vector2D *v2d);
+void freeVector2D(Vector2D *v2d, const int dim);
+void printVector2D(const Vector2D *v2d, const int dim);
     
 #endif // VECTOR2D_H

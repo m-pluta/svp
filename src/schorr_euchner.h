@@ -3,6 +3,6 @@
 
 #include "vector2d.h"
 
-double schorr_euchner(const Vector2D *B);
+double schorr_euchner(const Vector2D *B, const int dim);
 
 #endif // SCHORR_EUCHNER_H

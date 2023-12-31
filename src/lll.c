@@ -15,15 +15,15 @@ void update_bk(Vector *B_k, const int mu, const Vector *B_j, const int dim) {
 }
 
 
-void LLL(Vector2D *B) {
+void LLL(Vector2D *B, const int dim) {
     // Threshold
     float delta = 0.75;
 
     // Compute Initial GS_info
-    GS_Info *gs_info = gram_schmidt(B);
+    GS_Info *gs_info = gram_schmidt(B, dim);
 
     int k = 1;
-    while (k < B->dim) {
+    while (k < dim) {
         for (int j = k - 1; j >= 0; j--) {
             double mu_rounded = round(gs_info->mu->v[k]->e[j]);
             // If mu_rounded == 0, then skip pointless computation
@@ -33,7 +33,7 @@ void LLL(Vector2D *B) {
 
             // Update B_k
             if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
-                update_bk(B->v[k], mu_rounded, B->v[j], B->dim);
+                update_bk(B->v[k], mu_rounded, B->v[j], dim);
             }
 
             // Update mu values without recomputing GS_info
@@ -42,7 +42,7 @@ void LLL(Vector2D *B) {
                 gs_info->mu->v[k]->e[j] -= mu_rounded * gs_info->mu->v[k - 1]->e[j];
             }
         }
-        if (inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], B->dim) > (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1])) * inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], B->dim)) {
+        if (inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], dim) > (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1])) * inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], dim)) {
             // Go to next vector in basis
             k += 1;
         } else {
@@ -52,13 +52,13 @@ void LLL(Vector2D *B) {
             B->v[k-1] = temp;
 
             // Recompute GS_info
-            freeGSInfo(gs_info);
-            gs_info = gram_schmidt(B);
+            freeGSInfo(gs_info, dim);
+            gs_info = gram_schmidt(B, dim);
 
             // Next k
             k = max_int(k-1, 1);
         }
     }
 
-    freeGSInfo(gs_info);
+    freeGSInfo(gs_info, dim);
 }

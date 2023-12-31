@@ -25,25 +25,23 @@ Vector2D* mallocVector2D(const int dim) {
             return NULL;
         }
     }
-
-    v2d->dim = dim;
     return v2d;
 }
 
-void freeVector2D(Vector2D *v2d) {
-    for (int i = 0; i < v2d->dim; ++i) {
+void freeVector2D(Vector2D *v2d, const int dim) {
+    for (int i = 0; i < dim; ++i) {
         freeVector(v2d->v[i]);
     }
     free(v2d->v);
     free(v2d);
 }
 
-void printVector2D(const Vector2D *v2d) {
-    printf("Vector2D Dimension: %d\n", v2d->dim);
+void printVector2D(const Vector2D *v2d, const int dim) {
+    printf("Vector2D Dimension: %d\n", dim);
     
-    for (int i = 0; i < v2d->dim; ++i) {
+    for (int i = 0; i < dim; ++i) {
         printf("Vector %2.d: [", i + 1);
-        for (int j = 0; j < v2d->dim; ++j) {
+        for (int j = 0; j < dim; ++j) {
             if (j != 0) {
                 printf(" ");
             }

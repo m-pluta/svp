@@ -7,20 +7,20 @@
 #include "vector2d.h"
 #include "bound.h"
 
-double schorr_euchner(const Vector2D *B) {
-    GS_Info *gs_info = gram_schmidt(B);
+double schorr_euchner(const Vector2D *B, const int dim) {
+    GS_Info *gs_info = gram_schmidt(B, dim);
 
-    double bound = lambda_1(gs_info->Bs);
+    double bound = lambda_1(gs_info->Bs, dim);
 
     // printf("Bound: %.6f\n", bound);
 
-    double *p = calloc(B->dim + 1, sizeof(double));
-    double *v = calloc(B->dim, sizeof(double));
-    double *c = calloc(B->dim, sizeof(double));
-    double *w = calloc(B->dim, sizeof(double));
+    double *p = calloc(dim + 1, sizeof(double));
+    double *v = calloc(dim, sizeof(double));
+    double *c = calloc(dim, sizeof(double));
+    double *w = calloc(dim, sizeof(double));
     if (gs_info == NULL || p == NULL || v == NULL || c == NULL || w == NULL) {
         printf("Failed to malloc gs_info, p, v, c, w");
-        freeGSInfo(gs_info);
+        freeGSInfo(gs_info, dim);
         free(p);
         free(v);
         free(c);
@@ -34,7 +34,7 @@ double schorr_euchner(const Vector2D *B) {
     int last_non_zero = 0;
 
     for(;;) {
-        p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k],B->dim);
+        p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k],dim);
 
         if (p[k] < R_2) {
             if (k == 0) {
@@ -43,7 +43,7 @@ double schorr_euchner(const Vector2D *B) {
             } else {
                 k -= 1;
                 c[k] = 0;
-                for (int i = k + 1; i < B->dim; i++) {
+                for (int i = k + 1; i < dim; i++) {
                     c[k] -= gs_info->mu->v[i]->e[k] * v[i];
                 }
                 v[k] = round(c[k]);
@@ -51,8 +51,8 @@ double schorr_euchner(const Vector2D *B) {
             }
         } else {
             k += 1;
-            if (k == B->dim) {
-                freeGSInfo(gs_info);
+            if (k == dim) {
+                freeGSInfo(gs_info, dim);
                 free(p);
                 free(v);
                 free(c);

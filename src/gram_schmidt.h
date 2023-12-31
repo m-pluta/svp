@@ -8,7 +8,7 @@ typedef struct {
     Vector2D *Bs;
 } GS_Info;
 
-void freeGSInfo(GS_Info *gs_info);
-GS_Info* gram_schmidt(const Vector2D *B);
+void freeGSInfo(GS_Info *gs_info, const int dim);
+GS_Info* gram_schmidt(const Vector2D *B, const int dim);
 
 #endif

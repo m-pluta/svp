@@ -6,17 +6,17 @@
 #include "schorr_euchner.h"
 #include "lll.h"
 
-int parseInput(Vector2D *B, const int num_args, char *args[]) {
+int parseInput(Vector2D *B, const int dim, const int num_args, char *args[]) {
     int curr_vector = 0;
     int curr_element = 0;
 
-    if (num_args - 1 != B->dim * B->dim) {
+    if (num_args - 1 != dim * dim) {
         printf("Input Basis Dimension Mismatch");
         return 1;
     }
 
     for (int i = 1; i < num_args; i++) {
-        if (curr_vector >= B->dim && curr_element != 0) {
+        if (curr_vector >= dim && curr_element != 0) {
             printf("Input Basis Dimension Mismatch");
             return 1;
         }
@@ -74,23 +74,22 @@ int main(int argc, char *argv[]) {
     }
 
     // Parse the input
-    int res = parseInput(B, argc, argv);
+    int res = parseInput(B, N, argc, argv);
     if (res == 1) {
         printf("Failed to parse input basis");
-        freeVector2D(B);
-        free(B);
+        freeVector2D(B, N);
         return 1;
     }
 
-    LLL(B);
+    LLL(B, N);
 
     double result;
     if (N > 4) {
-        result = schorr_euchner(B);
+        result = schorr_euchner(B, N);
     } else {
-        result = norm(B->v[0], B->dim);
-        for (int i = 1; i < B->dim; i++) {
-            double temp = norm(B->v[i], B->dim);
+        result = norm(B->v[0], N);
+        for (int i = 1; i < N; i++) {
+            double temp = norm(B->v[i], N);
             if (temp < result) {
                 result = temp;
             }
@@ -100,7 +99,7 @@ int main(int argc, char *argv[]) {
     writeResultToFile(result);
 
     // Free allocated memory
-    freeVector2D(B);
+    freeVector2D(B, N);
 
     return 0;
 }
