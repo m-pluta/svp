@@ -28,7 +28,7 @@ test: main.o tests/test.c
 
 # Clean rule to remove generated files
 clean:
-	rm -rf runme $(OBJS)
+	rm -rf runme $(OBJS) result.txt
 
 run:
 	make all
