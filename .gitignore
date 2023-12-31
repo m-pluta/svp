@@ -5,6 +5,7 @@
 
 # Exclude test cases
 gen/
+result.txt
 
 # Env
 .vscode/
