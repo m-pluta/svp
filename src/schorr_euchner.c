@@ -6,6 +6,14 @@
 #include "vector.h"
 #include "vector2d.h"
 
+double calculate_ck(Vector2D *mu, int dim, int k, int *v) {
+    double result = 0;
+    for (int i = k + 1; i < dim; i++) {
+        result -= mu->v[i]->e[k] * v[i];
+    }
+    return result;
+}
+
 double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
     double *p = calloc(dim + 1, sizeof(double));
     int *v = calloc(dim, sizeof(int));
@@ -40,10 +48,7 @@ double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
 
             } else {
                 k -= 1;
-                c[k] = 0;
-                for (int i = k + 1; i < dim; i++) {
-                    c[k] -= gs_info->mu->v[i]->e[k] * v[i];
-                }
+                c[k] = calculate_ck(gs_info->mu, dim, k, v);
                 v[k] = (int) round(c[k]);
                 w[k] = 1;
             }
