@@ -64,6 +64,11 @@ double schorr_euchner(const Vector2D *B, const int dim) {
                 free(c);
                 free(w);
                 free(inner_products);
+                // Print out the coefficients of the shortest vector found
+                // printf("\n");
+                // for (int i = 0; i < dim; i++) {
+                //     printf("%3.1f ", v[i]);
+                // }
                 return sqrt(R_2);
             }
 
