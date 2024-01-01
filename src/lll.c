@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "vector.h"
 #include "vector2d.h"
@@ -22,6 +23,9 @@ void LLL(Vector2D *B, const int dim) {
     // Compute Initial GS_info
     GS_Info *gs_info = gram_schmidt(B, dim);
 
+    double* inner_products = malloc(dim * sizeof(double));
+    int first_iter = 1;
+
     int k = 1;
     while (k < dim) {
         for (int j = k - 1; j >= 0; j--) {
@@ -41,8 +45,23 @@ void LLL(Vector2D *B, const int dim) {
             for (int i = j - 1; i >= 0; i--) {
                 gs_info->mu->v[k]->e[j] -= mu_rounded * gs_info->mu->v[k - 1]->e[j];
             }
+            
         }
-        if (inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], dim) > (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1])) * inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], dim)) {
+
+        double ip_Bs_k = inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], dim);
+        double lovasz = (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1]));
+        double ip_Bs_k_1;
+        if (first_iter == 1) {
+            ip_Bs_k_1 = inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], dim);
+            first_iter = 0;
+        } else {
+            ip_Bs_k_1 = inner_products[k-1];
+        }
+
+        if (ip_Bs_k > lovasz * ip_Bs_k_1) {
+            // Store ip for next iter
+            inner_products[k] = ip_Bs_k;
+            
             // Go to next vector in basis
             k += 1;
         } else {
@@ -55,10 +74,14 @@ void LLL(Vector2D *B, const int dim) {
             freeGSInfo(gs_info, dim);
             gs_info = gram_schmidt(B, dim);
 
+            // Signal that GS has been recomputed
+            first_iter = 1;
+
             // Next k
             k = max_int(k-1, 1);
         }
     }
 
+    free(inner_products);
     freeGSInfo(gs_info, dim);
 }
