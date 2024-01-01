@@ -8,9 +8,9 @@
 
 double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
     double *p = calloc(dim + 1, sizeof(double));
-    double *v = calloc(dim, sizeof(double));
+    int *v = calloc(dim, sizeof(int));
     double *c = calloc(dim, sizeof(double));
-    double *w = calloc(dim, sizeof(double));
+    int *w = calloc(dim, sizeof(int));
     if (gs_info == NULL || p == NULL || v == NULL || c == NULL || w == NULL) {
         printf("Failed to malloc gs_info, p, v, c, w");
         freeGSInfo(gs_info, dim);
@@ -27,12 +27,11 @@ double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
     int last_non_zero = 0;
 
     double *inner_products = malloc(dim * sizeof(double));
-
     for (int i = 0; i < dim; i++) {
         inner_products[i] = inner_product(gs_info->Bs->v[i], gs_info->Bs->v[i], dim);
     }
 
-    for(;;) {
+    while(1) {
         p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_products[k];
 
         if (p[k] < R_2) {
@@ -45,7 +44,7 @@ double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
                 for (int i = k + 1; i < dim; i++) {
                     c[k] -= gs_info->mu->v[i]->e[k] * v[i];
                 }
-                v[k] = round(c[k]);
+                v[k] = (int) round(c[k]);
                 w[k] = 1;
             }
         } else {
