@@ -8,7 +8,7 @@
 #define max_int(x,y) (((x) >= (y)) ? (x) : (y))
 
 // Computes B_k = B_k - mu * B_j
-void update_bk(Vector *B_k, const long long int mu, const Vector *B_j, const int dim) {
+void update_bk(Vector *B_k, const long long mu, const Vector *B_j, const int dim) {
     for (int i = 0; i < dim; i++) {
         B_k->e[i] -= mu * B_j->e[i];
     }
@@ -27,7 +27,7 @@ void LLL(Vector2D *B, const int dim) {
         for (int j = k - 1; j >= 0; j--) {
             // Size reduce B_k
             if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
-                long long int mu_rounded = (long long int) round(gs_info->mu->v[k]->e[j]);
+                long long mu_rounded = (long long int) round(gs_info->mu->v[k]->e[j]);
 
                 update_bk(B->v[k], mu_rounded, B->v[j], dim);
 
