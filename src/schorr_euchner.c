@@ -5,15 +5,8 @@
 #include "gram_schmidt.h"
 #include "vector.h"
 #include "vector2d.h"
-#include "bound.h"
 
-double schorr_euchner(const Vector2D *B, const int dim) {
-    GS_Info *gs_info = gram_schmidt(B, dim);
-
-    double bound = lambda_1(gs_info->Bs, dim);
-
-    // printf("Bound: %.6f\n", bound);
-
+double schorr_euchner(const int dim, GS_Info *gs_info, double R) {
     double *p = calloc(dim + 1, sizeof(double));
     double *v = calloc(dim, sizeof(double));
     double *c = calloc(dim, sizeof(double));
@@ -29,7 +22,7 @@ double schorr_euchner(const Vector2D *B, const int dim) {
     }
     v[0] = 1;
 
-    double R_2 = bound * bound;
+    double R_2 = R * R;
     int k = 0;
     int last_non_zero = 0;
 
