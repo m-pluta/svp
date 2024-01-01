@@ -14,21 +14,27 @@ double calculate_ck(Vector2D *mu, int dim, int k, int *v) {
     return result;
 }
 
-double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
-    double *p = calloc(dim + 1, sizeof(double));
-    int *v = calloc(dim, sizeof(int));
-    double *c = calloc(dim, sizeof(double));
-    int *w = calloc(dim, sizeof(int));
-    if (gs_info == NULL || p == NULL || v == NULL || c == NULL || w == NULL) {
+void init_var(int dim, GS_Info *gs_info, double **p, int **v, double **c, int **w) {
+    *p = calloc(dim + 1, sizeof(double));
+    *v = calloc(dim, sizeof(int));
+    *c = calloc(dim, sizeof(double));
+    *w = calloc(dim, sizeof(int));
+    if (gs_info == NULL || *p == NULL || *v == NULL || *c == NULL || *w == NULL) {
         printf("Failed to malloc gs_info, p, v, c, w");
         freeGSInfo(gs_info, dim);
-        free(p);
-        free(v);
-        free(c);
-        free(w);
-        return 1;
+        free(*p);
+        free(*v);
+        free(*c);
+        free(*w);
+        return;
     }
-    v[0] = 1;
+    (*v)[0] = 1;
+}
+
+double schorr_euchner(const int dim, GS_Info *gs_info, long double R) {
+    double *p, *c;
+    int *v, *w;
+    init_var(dim, gs_info, &p, &v, &c, &w);
 
     long double R_2 = R * R;
     int k = 0;
