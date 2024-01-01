@@ -9,7 +9,7 @@
 #define max_int(x,y) (((x) >= (y)) ? (x) : (y))
 
 // Computes B_k = B_k - mu * B_j
-void update_bk(Vector *B_k, const int mu, const Vector *B_j, const int dim) {
+void update_bk(Vector *B_k, const long long mu, const Vector *B_j, const int dim) {
     for (int i = 0; i < dim; i++) {
         B_k->e[i] -= mu * B_j->e[i];
     }
@@ -29,21 +29,18 @@ void LLL(Vector2D *B, const int dim) {
     int k = 1;
     while (k < dim) {
         for (int j = k - 1; j >= 0; j--) {
-            double mu_rounded = (int) round(gs_info->mu->v[k]->e[j]);
-            // If mu_rounded == 0, then skip pointless computation
-            if (mu_rounded == 0) {
-                continue;
-            }
-
-            // Update B_k
+            // Size reduce B_k
             if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
-                update_bk(B->v[k], mu_rounded, B->v[j], dim);
-            }
+                long long mu_rounded = (long long int) round(gs_info->mu->v[k]->e[j]);
 
-            // Update mu values without recomputing GS_info
-            gs_info->mu->v[k]->e[j] -= mu_rounded;
-            for (int i = j - 1; i >= 0; i--) {
-                gs_info->mu->v[k]->e[j] -= mu_rounded * gs_info->mu->v[k - 1]->e[j];
+                update_bk(B->v[k], mu_rounded, B->v[j], dim);
+
+                // Update mu values without recomputing GS_info
+                gs_info->mu->v[k]->e[j] -= mu_rounded;
+                for (int i = 0; i < j; i++) {
+                    gs_info->mu->v[k]->e[i] -= mu_rounded * gs_info->mu->v[j]->e[i];
+                }
+
             }
             
         }

@@ -3,8 +3,10 @@
 #include <string.h>
 
 #include "vector2d.h"
-#include "schorr_euchner.h"
+#include "bound.h"
+#include "gram_schmidt.h"
 #include "lll.h"
+#include "schorr_euchner.h"
 
 int parseInput(Vector2D *B, const int dim, const int num_args, char *args[]) {
     int curr_vector = 0;
@@ -82,7 +84,13 @@ int main(int argc, char *argv[]) {
     }
 
     LLL(B, N);
-    double result = schorr_euchner(B, N);
+
+    GS_Info *gs_info = gram_schmidt(B, N);
+    long double bound = lambda_1(gs_info->Bs, N);
+    // printf("Bound: %.6Lf\n", bound);
+
+    double result = schorr_euchner(N, gs_info, bound);
+    // printf("%8.8f\n", result);
 
     writeResultToFile(result);
 
