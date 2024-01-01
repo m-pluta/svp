@@ -3,6 +3,6 @@
 
 #include "vector2d.h"
 
-double schorr_euchner(const int dim, GS_Info *gs_info, long double R);
+double schorr_euchner(const int dim, GS_Info *gs_info, double R);
 
 #endif // SCHORR_EUCHNER_H
