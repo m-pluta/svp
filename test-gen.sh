@@ -30,6 +30,7 @@ seed=$1
 type=$2
 dimension=$3
 bit_level=$4
+filename=$seed","$type","$dimension","$bit_level
 
 # Generate uniform basis test case
 gen_uniform() {
@@ -57,31 +58,32 @@ gen_uniform() {
     l2_norm=$(calculate_l2_norm "$shortest_vector")
 
     # Output test case to file
-    echo $formatted_lattice","$l2_norm >> $OUTPUT_PATH
+    echo $filename","$formatted_lattice","$l2_norm >> $OUTPUT_PATH
     rm temp.txt
 }
 
 # Generate knapsack-like basis test case
 gen_knapsack() {
-    # Knapsack generation is weird and generates an n by n+1 matrix so 1D not possible, therefore adjust
-    local dimension=$(($1-1))
-    local bit_level=$2
-
     # Check if dimension is less than 2
     if [ $dimension -lt 2 ]; then
         echo "Invalid dimension: $dimension. Dimension must be greater than or equal to 2 for knapsack"
         exit 1
     fi
 
+    # Knapsack generation is weird and generates an n by n+1 matrix so 1D not possible, therefore adjust
+    local dimension=$(($1-1))
+    local bit_level=$2
+
+
     # Temp file
     touch $OUTPUT_PATH temp.txt
 
     # Generate most of the lattice
-    lattice=$(latticegen -randseed $seed r $actual_dimension $bit_level | sed 's/\[\[/[/g' | sed 's/\]\]/]/g')
+    lattice=$(latticegen -randseed $seed r $dimension $bit_level | sed 's/\[\[/[/g' | sed 's/\]\]/]/g')
 
     # Generate missing row in lattice
     seed_plus_one=$((seed+1))
-    vector=$(latticegen -randseed $seed_plus_one r $actual_dimension $bit_level | grep -o -E '^\[\[([0-9]+)' | grep -o -E '[0-9]+')
+    vector=$(latticegen -randseed $seed_plus_one r $dimension $bit_level | grep -o -E '^\[\[([0-9]+)' | grep -o -E '[0-9]+')
     for (( i=0; i<$dimension; i++ )); do
         vector+=" 0"
     done
@@ -98,7 +100,7 @@ gen_knapsack() {
     l2_norm=$(calculate_l2_norm "$shortest_vector")
 
     # Output test case to file
-    echo $formatted_lattice","$l2_norm >> $OUTPUT_PATH
+    echo $filename","$formatted_lattice","$l2_norm >> $OUTPUT_PATH
     rm temp.txt
 }
 
