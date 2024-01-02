@@ -25,7 +25,7 @@ calculate_l2_norm() {
 }
 
 
-OUTPUT_PATH='test-gen.svp'
+OUTPUT_PATH='test-gen.csv'
 seed=$1
 type=$2
 dimension=$3
