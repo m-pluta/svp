@@ -42,6 +42,9 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
         for (int k = 0; k < i; k++) {
             mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], dim) / inner_products[k];
             // printf("mu[i][k]: %.6f\n", mu->v[i]->e[k]);
+            // if (mu->v[i]->e[k] == 0) {
+            //     continue;
+            // }
             for (int j = 0; j < dim; j++) {
                 Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
                 // printf("Bs[i][j]: %.6f, %.6f, %.6f\n", Bs->v[i]->e[j], mu->v[i]->e[k], Bs->v[k]->e[j]);
