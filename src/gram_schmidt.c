@@ -32,11 +32,10 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
         return NULL;
     }
 
-    double *inner_products = malloc(dim * sizeof(double));
+    double inner_products[dim];
 
     for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
-            mu->v[i]->e[j] = 0.0;
             Bs->v[i]->e[j] = B->v[i]->e[j];
         }
         
@@ -51,8 +50,6 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
 
         inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
     }
-
-    free(inner_products);
 
     gs_info->mu = mu;
     gs_info->Bs = Bs;

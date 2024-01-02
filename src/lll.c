@@ -23,7 +23,7 @@ void LLL(Vector2D *B, const int dim) {
     // Compute Initial GS_info
     GS_Info *gs_info = gram_schmidt(B, dim);
 
-    double* inner_products = malloc(dim * sizeof(double));
+    double inner_products[dim];
     int first_iter = 1;
 
     int k = 1;
@@ -79,6 +79,5 @@ void LLL(Vector2D *B, const int dim) {
         }
     }
 
-    free(inner_products);
     freeGSInfo(gs_info, dim);
 }

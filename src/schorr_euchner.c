@@ -40,7 +40,7 @@ double schorr_euchner(const int dim, GS_Info *gs_info, double R) {
     int k = 0;
     int last_non_zero = 0;
 
-    double *inner_products = malloc(dim * sizeof(double));
+    double inner_products[dim];
     for (int i = 0; i < dim; i++) {
         inner_products[i] = inner_product(gs_info->Bs->v[i], gs_info->Bs->v[i], dim);
     }
@@ -55,7 +55,7 @@ double schorr_euchner(const int dim, GS_Info *gs_info, double R) {
             } else {
                 k -= 1;
                 c[k] = calculate_ck(gs_info->mu, dim, k, v);
-                v[k] = (int) round(c[k]);
+                v[k] = round(c[k]);
                 w[k] = 1;
             }
         } else {
@@ -66,7 +66,6 @@ double schorr_euchner(const int dim, GS_Info *gs_info, double R) {
                 free(v);
                 free(c);
                 free(w);
-                free(inner_products);
                 // Print out the coefficients of the shortest vector found
                 // printf("\n");
                 // for (int i = 0; i < dim; i++) {
