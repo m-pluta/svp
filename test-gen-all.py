@@ -2,12 +2,15 @@ import subprocess
 import random
 import os
 
+TEST_FILE = 'test-gen.csv'
+BASH_SCRIPT = 'test-gen.sh'
+
 def reset_output_csv():
     try:
-        os.remove('test-gen.csv')
-        print(f"File {'test-gen.csv'} has been removed.")
+        os.remove(TEST_FILE)
+        print(f"File {TEST_FILE} has been removed.")
     except FileNotFoundError:
-        print(f"No action taken. The file {'test-gen.svp'} does not exist.")
+        print(f"No action taken. The file {TEST_FILE} does not exist.")
 
 def generate_tests():
     tests = []
@@ -26,16 +29,15 @@ def generate_tests():
 
 
 if __name__ == '__main__':
+    reset_output_csv()
     tests = generate_tests()
 
     assert len(tests) == len(set(tests)), "Duplicate tests were generated."
 
     random.shuffle(tests)
 
-    bash_script = 'test-gen.sh'
-
     for t in tests:
         try:
-            subprocess.run(['bash', bash_script, t[0], t[1], t[2], t[3]], check=True)
+            subprocess.run(['bash', BASH_SCRIPT, t[0], t[1], t[2], t[3]], check=True)
         except subprocess.CalledProcessError as e:
             print(f"An error occurred: {e}")
