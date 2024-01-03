@@ -3,7 +3,7 @@
 #include "vector2d.h"
 
 double hermite_constant(const int dim) {
-    return 1 + dim / 4;
+    return 1 + (double) dim / 4;
 }
 
 double volL(const Vector2D *Bs, const int dim) {
