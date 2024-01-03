@@ -5,7 +5,7 @@ import sys
 import re
 
 TEST_FILE = 'test-gen.csv'
-RESULT_FILE = 'test_result.csv'
+RESULT_FILE = 'test-result.csv'
 TIMEOUT = 60
 HYPERFINE_WARMUP = '1000'
 
