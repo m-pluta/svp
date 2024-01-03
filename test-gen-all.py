@@ -6,10 +6,10 @@ TEST_FILE = 'test-gen.csv'
 BASH_SCRIPT = 'test-gen.sh'
 
 def reset_output_csv():
-    try:
+    if os.path.exists(TEST_FILE):
         os.remove(TEST_FILE)
         print(f"File {TEST_FILE} has been removed.")
-    except FileNotFoundError:
+    else:
         print(f"No action taken. The file {TEST_FILE} does not exist.")
 
 def generate_tests():
@@ -38,6 +38,6 @@ if __name__ == '__main__':
 
     for t in tests:
         try:
-            subprocess.run(['bash', BASH_SCRIPT, t[0], t[1], t[2], t[3]], check=True)
+            subprocess.run(['bash', BASH_SCRIPT, *t], check=True)
         except subprocess.CalledProcessError as e:
             print(f"An error occurred: {e}")
