@@ -21,7 +21,7 @@ void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
     Vector2D *mu = gs_info->mu;
     
     // Threshold
-    float delta = 0.75;
+    float delta = 0.99;
 
     double inner_products[dim];
     int first_iter = 1;

@@ -20,6 +20,10 @@ all: runme
 runme: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
+again:
+	make clean
+	make all
+
 callgrind: clean
 	make clean
 	$(CC) -o runme $(SRCS) $(CFLAGS) $(DFLAGS)
