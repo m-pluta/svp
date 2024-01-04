@@ -4,11 +4,14 @@ DFLAGS = -pg -O1
 
 TESTCASE = [41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19 29] [12 4 69 155 39]
 
+# Directory variable
+DIR = src
+
 # List of source files
-SRCS = src/main.c src/vector.c src/vector2d.c src/gram_schmidt.c src/schorr_euchner.c src/bound.c src/lll.c
+SRCS = $(DIR)/vector.c $(DIR)/vector2d.c $(DIR)/gram_schmidt.c $(DIR)/schorr_euchner.c $(DIR)/bound.c $(DIR)/lll.c $(DIR)/main.c 
 
 # List of header files
-HDRS = src/vector.h src/vector2d.h src/gram_schmidt.h src/schorr_euchner.h src/bound.h src/lll.h
+HDRS = $(DIR)/vector.h $(DIR)/vector2d.h $(DIR)/gram_schmidt.h $(DIR)/schorr_euchner.h $(DIR)/bound.h $(DIR)/lll.h
 
 # List of object files
 OBJS = $(SRCS:.c=.o)
