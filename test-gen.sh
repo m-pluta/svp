@@ -64,6 +64,9 @@ gen_uniform() {
 
 # Generate knapsack-like basis test case
 gen_knapsack() {
+    local dimension=$1
+    local bit_level=$2
+    
     # Check if dimension is less than 2
     if [ $dimension -lt 2 ]; then
         echo "Invalid dimension: $dimension. Dimension must be greater than or equal to 2 for knapsack"
@@ -71,9 +74,7 @@ gen_knapsack() {
     fi
 
     # Knapsack generation is weird and generates an n by n+1 matrix so 1D not possible, therefore adjust
-    local dimension=$(($1-1))
-    local bit_level=$2
-
+    dimension=$(($dimension-1))
 
     # Temp file
     touch $OUTPUT_PATH temp.txt
@@ -83,7 +84,20 @@ gen_knapsack() {
 
     # Generate missing row in lattice
     seed_plus_one=$((seed+1))
-    vector=$(latticegen -randseed $seed_plus_one r $dimension $bit_level | grep -o -E '^\[\[([0-9]+)' | grep -o -E '[0-9]+')
+    extra_lattice=$(latticegen -randseed $seed_plus_one r $dimension $bit_level | sed 's/\]\[/\] \[/g' | tr -d '[' | tr -d ']')
+    vector=""
+
+    # Find first value >1 in extra lattice
+    for vec in "${extra_lattice[@]}"; do
+        for value in ${vec[@]}; do
+            if [ "$value" -gt 1 ]; then
+                vector+="$value"
+                break
+            fi
+        done
+    done
+    
+    # Create extra row
     for (( i=0; i<$dimension; i++ )); do
         vector+=" 0"
     done

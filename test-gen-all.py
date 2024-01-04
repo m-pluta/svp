@@ -8,9 +8,6 @@ BASH_SCRIPT = 'test-gen.sh'
 def reset_output_csv():
     if os.path.exists(TEST_FILE):
         os.remove(TEST_FILE)
-        print(f"File {TEST_FILE} has been removed.")
-    else:
-        print(f"No action taken. The file {TEST_FILE} does not exist.")
 
 def generate_tests():
     tests = []
