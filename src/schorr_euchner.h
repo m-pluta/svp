@@ -2,6 +2,7 @@
 #define SCHORR_EUCHNER_H
 
 #include "vector2d.h"
+#include "gram_schmidt.h"
 
 double schorr_euchner(const int dim, GS_Info *gs_info, double R_2);
 
