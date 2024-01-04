@@ -14,7 +14,7 @@ def setup():
         print("No test cases found.")
         sys.exit(1)
 
-    with open(f'test_result.csv', 'w') as file:
+    with open(RESULT_FILE, 'w') as file:
         file.write('seed,lattice_type,dimension,bit_level,'
                    'lattice,expected_answer,actual_answer,'
                    'mean,sd,user,system,min,max,runs\n')
