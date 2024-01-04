@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     LLL(B, N);
 
     GS_Info *gs_info = gram_schmidt(B, N);
-    double bound = lambda_1(gs_info->Bs, N);
+    double bound = lambda_1_squared(gs_info->Bs, N);
     // printf("Bound: %.6f\n", bound);
 
     double result = schorr_euchner(N, gs_info, bound);

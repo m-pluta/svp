@@ -14,6 +14,8 @@ double volL(const Vector2D *Bs, const int dim) {
     return volL;
 }
 
-double lambda_1(const Vector2D *Bs, const int dim) {
-    return sqrt(hermite_constant(dim)) * pow(volL(Bs, dim), 1./dim);
+// Return the un-square-rooted version
+// Avoids doing sqrt just to then square again in the SE algo
+double lambda_1_squared(const Vector2D *Bs, const int dim) {
+    return hermite_constant(dim) * pow(volL(Bs, dim), 2./dim);
 }

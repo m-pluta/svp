@@ -31,12 +31,11 @@ void init_var(int dim, GS_Info *gs_info, double **p, int **v, double **c, int **
     (*v)[0] = 1;
 }
 
-double schorr_euchner(const int dim, GS_Info *gs_info, double R) {
+double schorr_euchner(const int dim, GS_Info *gs_info, double R_2) {
     double *p, *c;
     int *v, *w;
     init_var(dim, gs_info, &p, &v, &c, &w);
 
-    double R_2 = R * R;
     int k = 0;
     int last_non_zero = 0;
 
