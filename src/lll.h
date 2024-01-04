@@ -3,6 +3,6 @@
 
 #include "vector2d.h"
 
-void LLL(Vector2D *B, const int dim);
+void LLL(Vector2D *B, GS_Info *gs_info, const int dim);
 
 #endif // LLL_H

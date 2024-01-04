@@ -16,12 +16,12 @@ void update_bk(Vector *B_k, const long long mu, const Vector *B_j, const int dim
 }
 
 
-void LLL(Vector2D *B, const int dim) {
+void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
+    Vector2D *Bs = gs_info->Bs;
+    Vector2D *mu = gs_info->mu;
+    
     // Threshold
     float delta = 0.75;
-
-    // Compute Initial GS_info
-    GS_Info *gs_info = gram_schmidt(B, dim);
 
     double inner_products[dim];
     int first_iter = 1;
@@ -30,26 +30,26 @@ void LLL(Vector2D *B, const int dim) {
     while (k < dim) {
         for (int j = k - 1; j >= 0; j--) {
             // Size reduce B_k
-            if (fabs(gs_info->mu->v[k]->e[j]) > 0.5) {
-                long long mu_rounded = (long long int) round(gs_info->mu->v[k]->e[j]);
+            if (fabs(mu->v[k]->e[j]) > 0.5) {
+                long long mu_rounded = (long long int) round(mu->v[k]->e[j]);
 
                 update_bk(B->v[k], mu_rounded, B->v[j], dim);
 
                 // Update mu values without recomputing GS_info
-                gs_info->mu->v[k]->e[j] -= mu_rounded;
+                mu->v[k]->e[j] -= mu_rounded;
                 for (int i = 0; i < j; i++) {
-                    gs_info->mu->v[k]->e[i] -= mu_rounded * gs_info->mu->v[j]->e[i];
+                    mu->v[k]->e[i] -= mu_rounded * mu->v[j]->e[i];
                 }
 
             }
             
         }
 
-        double ip_Bs_k = inner_product(gs_info->Bs->v[k], gs_info->Bs->v[k], dim);
-        double lovasz = (delta - (gs_info->mu->v[k]->e[k-1]) * (gs_info->mu->v[k]->e[k-1]));
+        double ip_Bs_k = inner_product(Bs->v[k], Bs->v[k], dim);
+        double lovasz = (delta - (mu->v[k]->e[k-1]) * (mu->v[k]->e[k-1]));
         double ip_Bs_k_1;
         if (first_iter == 1) {
-            ip_Bs_k_1 = inner_product(gs_info->Bs->v[k-1], gs_info->Bs->v[k-1], dim);
+            ip_Bs_k_1 = inner_product(Bs->v[k-1], Bs->v[k-1], dim);
             first_iter = 0;
         } else {
             ip_Bs_k_1 = inner_products[k-1];
@@ -68,8 +68,7 @@ void LLL(Vector2D *B, const int dim) {
             B->v[k-1] = temp;
 
             // Recompute GS_info
-            freeGSInfo(gs_info, dim);
-            gs_info = gram_schmidt(B, dim);
+            gram_schmidt_in_place(B, gs_info, dim);
 
             // Signal that GS has been recomputed
             first_iter = 1;
@@ -78,6 +77,4 @@ void LLL(Vector2D *B, const int dim) {
             k = max_int(k-1, 1);
         }
     }
-
-    freeGSInfo(gs_info, dim);
 }

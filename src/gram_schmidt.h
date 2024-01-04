@@ -10,5 +10,6 @@ typedef struct {
 
 void freeGSInfo(GS_Info *gs_info, const int dim);
 GS_Info* gram_schmidt(const Vector2D *B, const int dim);
+void gram_schmidt_in_place(Vector2D *B, GS_Info *gs_info, const int dim);
 
 #endif

@@ -83,18 +83,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    LLL(B, N);
-
     GS_Info *gs_info = gram_schmidt(B, N);
+    LLL(B, gs_info, N);
+    gram_schmidt_in_place(B, gs_info, N);
+
     double bound = lambda_1_squared(gs_info->Bs, N);
-    // printf("Bound: %.6f\n", bound);
+    printf("Bound: %.6f\n", bound);
+
+    gram_schmidt_in_place(B, gs_info, N);
 
     double result = schorr_euchner(N, gs_info, bound);
-    // printf("%8.8f\n", result);
+    printf("%8.8f\n", result);
 
     writeResultToFile(result);
 
     // Free allocated memory
+    freeGSInfo(gs_info, N);
     freeVector2D(B, N);
 
     return 0;

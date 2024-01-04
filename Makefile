@@ -59,7 +59,10 @@ do_run:
 clean:
 	rm -rf runme $(OBJS) result.txt gmon.out callgrind.out.*
 
-clean_tests:
-	rm -rf test-gen.csv test-result.csv
+clean-test-gen:
+	rm -rf test-gen.csv
 
+clean-test-res:
+	rm -rf test-result.csv
+	
 .PHONY: all test clean

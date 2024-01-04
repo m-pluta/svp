@@ -14,14 +14,13 @@ double calculate_ck(Vector2D *mu, int dim, int k, int *v) {
     return result;
 }
 
-void init_var(int dim, GS_Info *gs_info, double **p, int **v, double **c, int **w) {
+void init_var(int dim, double **p, int **v, double **c, int **w) {
     *p = calloc(dim + 1, sizeof(double));
     *v = calloc(dim, sizeof(int));
     *c = calloc(dim, sizeof(double));
     *w = calloc(dim, sizeof(int));
-    if (gs_info == NULL || *p == NULL || *v == NULL || *c == NULL || *w == NULL) {
-        printf("Failed to malloc gs_info, p, v, c, w");
-        freeGSInfo(gs_info, dim);
+    if (*p == NULL || *v == NULL || *c == NULL || *w == NULL) {
+        printf("Failed to malloc p, v, c, w");
         free(*p);
         free(*v);
         free(*c);
@@ -31,10 +30,10 @@ void init_var(int dim, GS_Info *gs_info, double **p, int **v, double **c, int **
     (*v)[0] = 1;
 }
 
-double schorr_euchner(const int dim, GS_Info *gs_info, double R_2) {
+double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
     double *p, *c;
     int *v, *w;
-    init_var(dim, gs_info, &p, &v, &c, &w);
+    init_var(dim, &p, &v, &c, &w);
 
     int k = 0;
     int last_non_zero = 0;
@@ -60,7 +59,6 @@ double schorr_euchner(const int dim, GS_Info *gs_info, double R_2) {
         } else {
             k += 1;
             if (k == dim) {
-                freeGSInfo(gs_info, dim);
                 free(p);
                 free(v);
                 free(c);
@@ -68,8 +66,9 @@ double schorr_euchner(const int dim, GS_Info *gs_info, double R_2) {
                 // Print out the coefficients of the shortest vector found
                 // printf("\n");
                 // for (int i = 0; i < dim; i++) {
-                //     printf("%3.1f ", v[i]);
+                //     printf("%d ", v[i]);
                 // }
+                // printf("\n");
                 return sqrt(R_2);
             }
 
