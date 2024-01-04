@@ -15,6 +15,22 @@ void update_bk(Vector *B_k, const long long mu, const Vector *B_j, const int dim
     }
 }
 
+void size_reduce_bk(Vector2D *B, Vector2D *mu, const int dim, const int k) {
+    for (int j = k - 1; j >= 0; j--) {
+        if (fabs(mu->v[k]->e[j]) > 0.5) {
+            long long mu_rounded = (long long int) round(mu->v[k]->e[j]);
+            
+            update_bk(B->v[k], mu_rounded, B->v[j], dim);
+
+            // Update mu values without recomputing GS_info
+            mu->v[k]->e[j] -= mu_rounded;
+            for (int i = 0; i < j; i++) {
+                mu->v[k]->e[i] -= mu_rounded * mu->v[j]->e[i];
+            }
+        }
+    }
+}
+
 
 void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
     Vector2D *Bs = gs_info->Bs;
@@ -28,22 +44,7 @@ void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
 
     int k = 1;
     while (k < dim) {
-        for (int j = k - 1; j >= 0; j--) {
-            // Size reduce B_k
-            if (fabs(mu->v[k]->e[j]) > 0.5) {
-                long long mu_rounded = (long long int) round(mu->v[k]->e[j]);
-
-                update_bk(B->v[k], mu_rounded, B->v[j], dim);
-
-                // Update mu values without recomputing GS_info
-                mu->v[k]->e[j] -= mu_rounded;
-                for (int i = 0; i < j; i++) {
-                    mu->v[k]->e[i] -= mu_rounded * mu->v[j]->e[i];
-                }
-
-            }
-            
-        }
+        size_reduce_bk(B, mu, dim, k);
 
         double ip_Bs_k = inner_product(Bs->v[k], Bs->v[k], dim);
         double lovasz = (delta - (mu->v[k]->e[k-1]) * (mu->v[k]->e[k-1]));
