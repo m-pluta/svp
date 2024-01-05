@@ -96,6 +96,12 @@ gen_knapsack() {
             fi
         done
     done
+
+    if [ -z "$vector" ]; then
+        seed=$((seed+1))
+        gen_knapsack $(($dimension+1)) "$bit_level"
+        exit 1
+    fi
     
     # Create extra row
     for (( i=0; i<$dimension; i++ )); do

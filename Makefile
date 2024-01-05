@@ -58,18 +58,15 @@ do_run:
 	@cat result.txt
 	@echo
 
-# Rule to build object files from source files
-%.o: %.c $(HDRS)
-	$(CC) -c $< -o $@ $(CFLAGS)
-
 # Clean rule to remove generated files
 clean:
 	rm -rf runme $(OBJS) result.txt gmon.out callgrind.out.*
 
-clean-test-gen:
-	rm -rf test-gen.csv
+clean-test:
+	rm -rf test-gen.csv test-result.csv
 
-clean-test-res:
-	rm -rf test-result.csv
+run-test:
+	python3 test-gen-all.py
+	python3 test-run.py
 	
 .PHONY: all test clean
