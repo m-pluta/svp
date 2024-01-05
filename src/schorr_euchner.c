@@ -31,6 +31,9 @@ void init_var(int dim, double **p, int **v, double **c, int **w) {
 }
 
 double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
+    Vector2D *Bs = gs_info->Bs;
+    Vector2D *mu = gs_info->mu;
+
     double *p, *c;
     int *v, *w;
     init_var(dim, &p, &v, &c, &w);
@@ -38,12 +41,12 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
     int k = 0;
     int last_non_zero = 0;
 
-    double inner_products[dim];
+    double *inner_products = malloc(dim * sizeof(double));
     for (int i = 0; i < dim; i++) {
-        inner_products[i] = inner_product(gs_info->Bs->v[i], gs_info->Bs->v[i], dim);
+        inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
     }
 
-    while(1) {
+    while (1) {
         p[k] = p[k+1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_products[k];
 
         if (p[k] < R_2) {
@@ -52,13 +55,14 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
 
             } else {
                 k -= 1;
-                c[k] = calculate_ck(gs_info->mu, dim, k, v);
+                c[k] = calculate_ck(mu, dim, k, v);
                 v[k] = round(c[k]);
                 w[k] = 1;
             }
         } else {
             k += 1;
             if (k == dim) {
+                free(inner_products);
                 free(p);
                 free(v);
                 free(c);

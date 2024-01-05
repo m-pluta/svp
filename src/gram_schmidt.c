@@ -32,15 +32,16 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
         return NULL;
     }
 
-    double inner_products[dim];
+    double *inner_products = malloc(dim * sizeof(double));
 
     for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
             Bs->v[i]->e[j] = B->v[i]->e[j];
         }
-        
+
         for (int k = 0; k < i; k++) {
-            mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], dim) / inner_products[k];
+            double ip = inner_product(B->v[i], Bs->v[k], dim);
+            mu->v[i]->e[k] = ip / inner_products[k];
             for (int j = 0; j < dim; j++) {
                 Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
             }
@@ -49,6 +50,8 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
         // Store calculation for later computations
         inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
     }
+
+    free(inner_products);
 
     gs_info->mu = mu;
     gs_info->Bs = Bs;
@@ -59,7 +62,7 @@ GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
 void gram_schmidt_in_place(Vector2D *B, GS_Info *gs_info, const int dim) {
     Vector2D *Bs = gs_info->Bs;
     Vector2D *mu = gs_info->mu;
-    double inner_products[dim];
+    double *inner_products = malloc(dim * sizeof(double));
 
     for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
@@ -67,7 +70,8 @@ void gram_schmidt_in_place(Vector2D *B, GS_Info *gs_info, const int dim) {
         }
 
         for (int k = 0; k < i; k++) {
-            mu->v[i]->e[k] = inner_product(B->v[i], Bs->v[k], dim) / inner_products[k];
+            double ip = inner_product(B->v[i], Bs->v[k], dim);
+            mu->v[i]->e[k] = ip / inner_products[k];
             for (int j = 0; j < dim; j++) {
                 Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
             }
@@ -76,4 +80,5 @@ void gram_schmidt_in_place(Vector2D *B, GS_Info *gs_info, const int dim) {
         // Store calculation for later computations
         inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
     }
+    free(inner_products);
 }

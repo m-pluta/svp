@@ -6,21 +6,17 @@
 #include "vector2d.h"
 #include "gram_schmidt.h"
 
-#define max_int(x,y) (((x) >= (y)) ? (x) : (y))
-
-// Computes B_k = B_k - mu * B_j
-void update_bk(Vector *B_k, const long long mu, const Vector *B_j, const int dim) {
-    for (int i = 0; i < dim; i++) {
-        B_k->e[i] -= mu * B_j->e[i];
-    }
-}
+#define max_int(x, y) (((x) >= (y)) ? (x) : (y))
 
 void size_reduce_bk(Vector2D *B, Vector2D *mu, const int dim, const int k) {
     for (int j = k - 1; j >= 0; j--) {
         if (fabs(mu->v[k]->e[j]) > 0.5) {
-            long long mu_rounded = (long long int) round(mu->v[k]->e[j]);
-            
-            update_bk(B->v[k], mu_rounded, B->v[j], dim);
+            __int64_t mu_rounded = (__int64_t) round(mu->v[k]->e[j]);
+
+            // Update bk
+            for (int i = 0; i < dim; i++) {
+                B->v[k]->e[i] -= mu_rounded * B->v[j]->e[i];
+            }
 
             // Update mu values without recomputing GS_info
             mu->v[k]->e[j] -= mu_rounded;
@@ -32,23 +28,20 @@ void size_reduce_bk(Vector2D *B, Vector2D *mu, const int dim, const int k) {
 }
 
 
-void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
+void LLL(Vector2D *B, GS_Info *gs_info, const double delta, const int dim) {
     Vector2D *Bs = gs_info->Bs;
     Vector2D *mu = gs_info->mu;
-    
-    // Threshold
-    float delta = 0.99;
 
-    double inner_products[dim];
+    long double inner_products[dim];
     int first_iter = 1;
 
     int k = 1;
     while (k < dim) {
         size_reduce_bk(B, mu, dim, k);
 
-        double ip_Bs_k = inner_product(Bs->v[k], Bs->v[k], dim);
-        double lovasz = (delta - (mu->v[k]->e[k-1]) * (mu->v[k]->e[k-1]));
-        double ip_Bs_k_1;
+        long double ip_Bs_k = inner_product(Bs->v[k], Bs->v[k], dim);
+        long double lovasz = (delta - (mu->v[k]->e[k-1]) * (mu->v[k]->e[k-1]));
+        long double ip_Bs_k_1;
         if (first_iter == 1) {
             ip_Bs_k_1 = inner_product(Bs->v[k-1], Bs->v[k-1], dim);
             first_iter = 0;
@@ -59,7 +52,7 @@ void LLL(Vector2D *B, GS_Info *gs_info, const int dim) {
         if (ip_Bs_k > lovasz * ip_Bs_k_1) {
             // Store ip for next iter
             inner_products[k] = ip_Bs_k;
-            
+
             // Go to next vector in basis
             k += 1;
         } else {

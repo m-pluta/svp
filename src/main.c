@@ -22,7 +22,7 @@ int parseInput(Vector2D *B, const int dim, const int num_args, char *args[]) {
             printf("Input Basis Dimension Mismatch");
             return 1;
         }
-        
+
         char* curr_arg = args[i];
         // printf("Input : %s\n", curr_arg);
 
@@ -38,7 +38,7 @@ int parseInput(Vector2D *B, const int dim, const int num_args, char *args[]) {
         }
     }
 
-    return 0;   
+    return 0;
 }
 
 void writeResultToFile(const double result) {
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     }
 
     GS_Info *gs_info = gram_schmidt(B, N);
-    LLL(B, gs_info, N);
+    LLL(B, gs_info, 0.99, N);
     gram_schmidt_in_place(B, gs_info, N);
 
     double bound = lambda_1_squared(gs_info->Bs, N);

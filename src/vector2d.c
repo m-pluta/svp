@@ -38,7 +38,7 @@ void freeVector2D(Vector2D *v2d, const int dim) {
 
 void printVector2D(const Vector2D *v2d, const int dim) {
     printf("Vector2D Dimension: %d\n", dim);
-    
+
     for (int i = 0; i < dim; ++i) {
         printf("Vector %2.d: [", i + 1);
         for (int j = 0; j < dim; ++j) {
