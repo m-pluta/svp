@@ -3,7 +3,6 @@
 
 #include "vector.h"
 #include "vector2d.h"
-
 #include "gram_schmidt.h"
 
 void freeGSInfo(GS_Info *gs_info, const int dim) {
