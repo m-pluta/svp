@@ -100,7 +100,7 @@ gen_knapsack() {
     if [ -z "$vector" ]; then
         seed=$((seed+1))
         gen_knapsack $(($dimension+1)) "$bit_level"
-        exit 1
+        exit 0
     fi
     
     # Create extra row
