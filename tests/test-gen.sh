@@ -25,7 +25,7 @@ calculate_l2_norm() {
 }
 
 
-OUTPUT_PATH='test-gen.csv'
+OUTPUT_PATH='tests/test-gen.csv'
 seed=$1
 type=$2
 dimension=$3
@@ -44,22 +44,22 @@ gen_uniform() {
     fi
 
     # Temp file
-    touch $OUTPUT_PATH temp.txt
+    touch $OUTPUT_PATH tests/temp.txt
 
     # Generate the lattice
     lattice=$(latticegen -randseed $seed u $dimension $bit_level)
-    echo $lattice > temp.txt
+    echo $lattice > tests/temp.txt
 
     # Format lattice according to coursework spec
     formatted_lattice=$(echo "$lattice" | tr -d '\n' | sed 's/^\[\(.*\)\]$/\1/' | sed 's/\]\[/\] \[/g')
 
     # Use fplll to find shortest vector an norm
-    shortest_vector=$(fplll -a svp temp.txt)
+    shortest_vector=$(fplll -a svp tests/temp.txt)
     l2_norm=$(calculate_l2_norm "$shortest_vector")
 
     # Output test case to file
     echo $filename","$formatted_lattice","$l2_norm >> $OUTPUT_PATH
-    rm temp.txt
+    rm tests/temp.txt
 }
 
 # Generate knapsack-like basis test case
@@ -77,7 +77,7 @@ gen_knapsack() {
     dimension=$(($dimension-1))
 
     # Temp file
-    touch $OUTPUT_PATH temp.txt
+    touch $OUTPUT_PATH tests/temp.txt
 
     # Generate most of the lattice
     lattice=$(latticegen -randseed $seed r $dimension $bit_level | sed 's/\[\[/[/g' | sed 's/\]\]/]/g')
@@ -110,18 +110,18 @@ gen_knapsack() {
 
     # Add it to the lattice
     lattice="[$lattice [$vector]]"
-    echo $lattice > temp.txt
+    echo $lattice > tests/temp.txt
 
     # Format lattice according to coursework spec
     formatted_lattice=$(echo "$lattice" | tr -d '\n' | sed 's/^\[\(.*\)\]$/\1/' | sed 's/\]\[/\] \[/g')
 
     # Use fplll to find shortest vector an norm
-    shortest_vector=$(fplll -a svp temp.txt)
+    shortest_vector=$(fplll -a svp tests/temp.txt)
     l2_norm=$(calculate_l2_norm "$shortest_vector")
 
     # Output test case to file
     echo $filename","$formatted_lattice","$l2_norm >> $OUTPUT_PATH
-    rm temp.txt
+    rm tests/temp.txt
 }
 
 # Main execution

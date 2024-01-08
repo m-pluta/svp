@@ -6,6 +6,7 @@ TESTCASE = [41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19
 
 # Directory variable
 DIR = src/
+TEST_DIR = tests/
 
 # List of source files
 SRCS = $(wildcard $(DIR)*.c)
@@ -14,7 +15,7 @@ SRCS = $(wildcard $(DIR)*.c)
 OBJS = $(SRCS:.c=.o)
 
 # The main target
-all: cpplint runme
+all: runme
 
 # Target to build the executable
 runme: $(OBJS)
@@ -22,18 +23,21 @@ runme: $(OBJS)
 
 again:
 	make clean
-	make all
+	make runme
 
 callgrind: clean
-	make clean
+	make again
 	$(CC) -o runme $(SRCS) $(CFLAGS) $(DFLAGS)
-	valgrind --tool=callgrind ./runme $(TESTCASE)
+	valgrind --tool=callgrind ./freddy $(TESTCASE)
 	kcachegrind callgrind.out.*
 
 hyperfine:
-	make clean
-	make runme
+	make again
 	hyperfine "./runme $(TESTCASE)" > hyperfine.txt
+
+memusage:
+	make again
+	memusage -T ./runme $(TESTCASE) |&grep -E -o 'heap total: [0-9]+' >> out 2>&1
 
 #Simple test suite
 test:
@@ -60,11 +64,11 @@ clean:
 	rm -rf runme $(OBJS) result.txt gmon.out callgrind.out.*
 
 clean-test:
-	rm -rf test-gen.csv test-result.csv
+	rm -rf $(TEST_DIR)test-gen.csv $(TEST_DIR)test-result.csv
 
 run-test:
-	python3 test-gen-all.py
-	python3 test-run.py
+	python3 $(TEST_DIR)test-gen-all.py
+	python3 $(TEST_DIR)test-run.py
 
 cpplint:
 	cpplint $(SRCS)

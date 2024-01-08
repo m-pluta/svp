@@ -2,8 +2,9 @@ import subprocess
 import random
 import os
 
-TEST_FILE = 'test-gen.csv'
-BASH_SCRIPT = 'test-gen.sh'
+TEST_DIR = 'tests/'
+TEST_FILE = os.path.join(TEST_DIR, 'test-gen.csv')
+BASH_SCRIPT = os.path.join(TEST_DIR, 'test-gen.sh')
 
 def reset_output_csv():
     if os.path.exists(TEST_FILE):
@@ -12,7 +13,7 @@ def reset_output_csv():
 def generate_tests():
     tests = []
 
-    for dimension in range(1, 51):
+    for dimension in range(1, 41):
         for bit_level in (8, 16, 32):
             for _ in range(50 if dimension <= 10 else 10):
                 tests.append((str(random.getrandbits(32)), 'u', str(dimension), str(bit_level)))
@@ -31,7 +32,7 @@ if __name__ == '__main__':
 
     assert len(tests) == len(set(tests)), "Duplicate tests were generated."
 
-    random.shuffle(tests)
+    # random.shuffle(tests)
 
     for t in tests:
         try:

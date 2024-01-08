@@ -4,8 +4,9 @@ import csv
 import sys
 import re
 
-TEST_FILE = 'test-gen.csv'
-RESULT_FILE = 'test-result.csv'
+TEST_DIR = 'tests/'
+TEST_FILE = os.path.join(TEST_DIR, 'test-gen.csv')
+RESULT_FILE = os.path.join(TEST_DIR, 'test-result.csv')
 TIMEOUT = 60
 HYPERFINE_WARMUP = '1000'
 
@@ -77,11 +78,11 @@ if __name__ == '__main__':
 
         # Iterate over each test case
         for i, test_case in enumerate(csv_reader):
-            answer, hyperfine_stats = run_hyperfine(test_case[4])
-            # answer = run(test_case[4])
+            # answer, hyperfine_stats = run_hyperfine(test_case[4])
+            answer = run(test_case[4])
 
-            data = list(test_case) + [answer] + hyperfine_stats
-            # data = list(test_case) + [answer]
+            # data = list(test_case) + [answer] + hyperfine_stats
+            data = list(test_case) + [answer]
 
             csv_writer.writerow(data)
             print(i)
