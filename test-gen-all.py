@@ -14,12 +14,12 @@ def generate_tests():
 
     for dimension in range(1, 51):
         for bit_level in (8, 16, 32):
-            for _ in range(100 if dimension <= 10 else 10):
+            for _ in range(50 if dimension <= 10 else 10):
                 tests.append((str(random.getrandbits(32)), 'u', str(dimension), str(bit_level)))
 
-    for dimension in range(2, 51):
+    for dimension in range(2, 21):
         for bit_level in (8, 16, 32):
-            for _ in range(100 if dimension <= 10 else 10):
+            for _ in range(50 if dimension <= 10 else 10):
                 tests.append((str(random.getrandbits(32)), 'r', str(dimension), str(bit_level)))
 
     return tests

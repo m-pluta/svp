@@ -51,10 +51,10 @@ def run_hyperfine(lattice: str):
         return (answer, extract_hyperfine(hyperfine.stdout))
     except subprocess.TimeoutExpired:
         print(f"Subprocess timed out after {TIMEOUT} seconds.")
-        return '-1.0'
+        return ('-1.0', [])
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-        return '-2.0'
+        return ('-2.0', [])
 
 def run(lattice: str):
     try:
@@ -76,13 +76,14 @@ if __name__ == '__main__':
         csv_writer = csv.writer(result_file)
 
         # Iterate over each test case
-        for test_case in csv_reader:
-            # answer, hyperfine_stats = run_hyperfine(test_case[4])
-            answer = run(test_case[4])
+        for i, test_case in enumerate(csv_reader):
+            answer, hyperfine_stats = run_hyperfine(test_case[4])
+            # answer = run(test_case[4])
 
-            # data = list(test_case) + [answer] + hyperfine_stats
-            data = list(test_case) + [answer]
+            data = list(test_case) + [answer] + hyperfine_stats
+            # data = list(test_case) + [answer]
 
             csv_writer.writerow(data)
+            print(i)
 
     make('clean')
