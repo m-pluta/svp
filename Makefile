@@ -5,19 +5,16 @@ DFLAGS = -pg -O1
 TESTCASE = [41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19 29] [12 4 69 155 39]
 
 # Directory variable
-DIR = src2/
+DIR = src/
 
 # List of source files
-SRCS = $(DIR)vector.c $(DIR)matrix.c $(DIR)gram_schmidt.c $(DIR)schnorr_euchner.c $(DIR)bound.c $(DIR)lll.c $(DIR)main.c 
-
-# List of header files
-HDRS = $(DIR)vector.h $(DIR)matrix.h $(DIR)gram_schmidt.h $(DIR)schnorr_euchner.h $(DIR)bound.h $(DIR)lll.h
+SRCS = $(wildcard $(DIR)*.c)
 
 # List of object files
 OBJS = $(SRCS:.c=.o)
 
 # The main target
-all: runme
+all: cpplint runme
 
 # Target to build the executable
 runme: $(OBJS)
@@ -68,5 +65,8 @@ clean-test:
 run-test:
 	python3 test-gen-all.py
 	python3 test-run.py
-	
-.PHONY: all test clean
+
+cpplint:
+	cpplint $(SRCS)
+
+.PHONY: all runme again callgrind hyperfine test do_run clean clean-test run-test
