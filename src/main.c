@@ -32,6 +32,9 @@ int main(int argc, char *argv[]) {
     for (N = 1; N < argc; N++) {
         if (argv[N][strlen(argv[N]) - 1] == ']') {
             break;
+        } else if (N == argc - 1) {
+            printf("Invalid Input: No closing bracket\n");
+            return 1;
         }
     }
     printf("N: %d\n", N);
