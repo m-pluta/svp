@@ -5,15 +5,9 @@
 #include "matrix.h"
 #include "gram_schmidt.h"
 
-void freeGSInfo(GS_Info *gs_info, const int dim)
-{
-    freeMatrix(gs_info->mu, dim);
-    freeMatrix(gs_info->Bs, dim);
-    free(gs_info);
-}
-
 GS_Info *mallocGS_Info(const int dim)
 {
+    // Malloc the struct
     GS_Info *gs_info = malloc(sizeof(GS_Info));
     if (gs_info == NULL)
     {
@@ -21,6 +15,7 @@ GS_Info *mallocGS_Info(const int dim)
         return NULL;
     }
 
+    // Attempt to malloc the mu matrix
     gs_info->mu = mallocMatrix(dim);
     if (gs_info->mu == NULL)
     {
@@ -29,6 +24,7 @@ GS_Info *mallocGS_Info(const int dim)
         return NULL;
     }
 
+    // Attempt to malloc the B-star matrix
     gs_info->Bs = mallocMatrix(dim);
     if (gs_info->Bs == NULL)
     {
@@ -40,19 +36,32 @@ GS_Info *mallocGS_Info(const int dim)
     return gs_info;
 }
 
+void freeGSInfo(GS_Info *gs_info, const int dim)
+{
+    freeMatrix(gs_info->mu, dim);
+    freeMatrix(gs_info->Bs, dim);
+    free(gs_info);
+    gs_info = NULL;
+}
+
 void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim)
 {
+    // Extract mu and Bs for readability
     Matrix Bs = gs_info->Bs;
     Matrix mu = gs_info->mu;
+
+    // Memoise the inner products throughout execution for performance
     double inner_products[dim];
 
     for (int i = 0; i < dim; i++)
     {
+        // Copy Basis into Bs
         for (int j = 0; j < dim; j++)
         {
             Bs[i][j] = B[i][j];
         }
 
+        // Orthogonalise the basis
         for (int k = 0; k < i; k++)
         {
             double ip = inner_product(B[i], Bs[k], dim);
@@ -63,7 +72,7 @@ void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim)
             }
         }
 
-        // Store calculation of inner product for later computations
+        // Store calculation of inner product for later computation
         inner_products[i] = inner_product(Bs[i], Bs[i], dim);
     }
 }

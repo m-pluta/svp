@@ -6,18 +6,20 @@
 #include "vector.h"
 #include "matrix.h"
 
+// Helper function to calculate ck = -sum_{k+1}^{dim}{mu[i][k] * v[i]}
 double calculate_ck(Matrix mu, int dim, int k, int *v)
 {
-    double result = 0;
+    double ck = 0;
     for (int i = k + 1; i < dim; i++)
     {
-        result -= mu[i][k] * v[i];
+        ck -= mu[i][k] * v[i];
     }
-    return result;
+    return ck;
 }
 
 void init_var(int dim, double **p, int **v, double **c, int **w)
 {
+    // Calloc all arrays
     *p = calloc(dim + 1, sizeof(double));
     *v = calloc(dim, sizeof(int));
     *c = calloc(dim, sizeof(double));
@@ -31,14 +33,17 @@ void init_var(int dim, double **p, int **v, double **c, int **w)
         free(*w);
         return;
     }
+    // Initially the SE solution is just the first vector
     *v[0] = 1;
 }
 
 double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
 {
+    // Extract B star and mu matrix for code readability
     Matrix Bs = gs_info->Bs;
     Matrix mu = gs_info->mu;
 
+    // Declare pointers for arrays
     double *p, *c;
     int *v, *w;
     init_var(dim, &p, &v, &c, &w);
@@ -46,6 +51,7 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
     int k = 0;
     int last_non_zero = 0;
 
+    // Pre-calculate all the inner products - Performance
     double inner_products[dim];
     for (int i = 0; i < dim; i++)
     {
@@ -56,10 +62,12 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
     {
         p[k] = p[k + 1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_products[k];
 
+        // R squared represents the search area
         if (p[k] < R_2)
         {
             if (k == 0)
             {
+                // New shortest vector found
                 R_2 = p[k];
             }
             else
@@ -75,6 +83,7 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
             k += 1;
             if (k == dim)
             {
+                // Optimal solution found
                 free(p);
                 free(v);
                 free(c);
@@ -95,6 +104,8 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
             }
             else
             {
+                // This is the zig-zag search that starts at v[k] and then
+                // zig-zags +-1, +-2, +-3, etc to find a more optimal solution
                 if (v[k] > c[k])
                 {
                     v[k] -= w[k];
@@ -103,6 +114,7 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
                 {
                     v[k] += w[k];
                 }
+                // Extend length of the zig-zag
                 w[k] += 1;
             }
         }

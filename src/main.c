@@ -10,6 +10,7 @@
 
 void writeResultToFile(const double result)
 {
+    // Open result file and output shortest norm with 12dp precision
     FILE *file = fopen("result.txt", "w");
     if (file != NULL)
     {
@@ -22,9 +23,21 @@ void writeResultToFile(const double result)
     }
 }
 
+int findFirstClosingBracket(int argc, char *argv[])
+{
+    for (int i = 1; i < argc; i++)
+    {
+        if (argv[i][strlen(argv[i]) - 1] == ']')
+        {
+            return i; // Found the argument ending with ']'
+        }
+    }
+    return -1; // Indicate no closing bracket found
+}
+
 int main(int argc, char *argv[])
 {
-    // Check number of arguments
+    // Check number of arguments is at least 1
     if (argc == 1)
     {
         printf("No basis provided");
@@ -33,22 +46,15 @@ int main(int argc, char *argv[])
     }
 
     // Calculate size of first input vector
-    int N;
-    for (N = 1; N < argc; N++)
+    int N = findFirstClosingBracket(argc, argv);
+    if (N == -1)
     {
-        if (argv[N][strlen(argv[N]) - 1] == ']')
-        {
-            break;
-        }
-        else if (N == argc - 1)
-        {
-            printf("Invalid Input: No closing bracket\n");
-            return 1;
-        }
+        printf("Invalid Input: No closing bracket\n");
+        return 1;
     }
     // printf("N: %d\n", N);
 
-    // Malloc the basis
+    // Malloc the Basis
     Matrix B = mallocMatrix(N);
     if (B == NULL)
     {
@@ -60,12 +66,16 @@ int main(int argc, char *argv[])
     int res = parseInput(B, N, argc, argv);
     if (res == 1)
     {
+        // Parsing was unsuccessful
         freeMatrix(B, N);
         return 1;
     }
 
+    // Malloc the GS_Info struct and perform Gram Schmidt Procedure
     GS_Info *gs_info = mallocGS_Info(N);
     gram_schmidt(B, gs_info, N);
+
+    // Check if Basis is linearly independent
     if (isLinearlyDependent(gs_info->Bs, N))
     {
         freeMatrix(B, N);
@@ -73,12 +83,17 @@ int main(int argc, char *argv[])
         printf("Invalid Input: The input vectors are not linearly independent\n");
         return 1;
     }
+
+    // Perform LLL to get the LLL reduced basis
+    // Perform a subsequent GS to update
     LLL(B, gs_info, 0.99, N);
     gram_schmidt(B, gs_info, N);
 
+    // Calculate the Minkowski Bound
     double bound = lambda_1_squared(gs_info->Bs, N);
     // printf("Bound: %.6f\n", bound);
 
+    // Perform Schnorr-Euchner enumeration
     double result = schorr_euchner(N, gs_info, bound);
     // printf("%8.8f\n", result);
 
@@ -87,6 +102,5 @@ int main(int argc, char *argv[])
     // Free allocated memory
     freeGSInfo(gs_info, N);
     freeMatrix(B, N);
-
     return 0;
 }

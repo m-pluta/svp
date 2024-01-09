@@ -11,6 +11,7 @@ int isValidArgument(char *c)
 {
     while (*c != '\0')
     {
+        // Check if argument contains only allowed characters
         if (isdigit(*c) || *c == ']' || *c == '[' || *c == '.' || *c == '+' || *c == '-')
         {
             c++;
@@ -64,13 +65,14 @@ int parseInput(Matrix B, const int dim, int num_args, char *args[])
             return 1;
         }
 
-        // Skip first character if its an opening bracket
         if (curr_arg[0] == '[')
         {
+            // Skip first character if its an opening bracket
             if (curr_e == 0)
             {
                 curr_arg++;
             }
+            // Check if the opening bracket appeared somewhere it shouldn't have
             else
             {
                 printf("Invalid Input: Unexpected opening bracket in vector %d, element %d\n", curr_v + 1, curr_e + 1);
@@ -78,7 +80,7 @@ int parseInput(Matrix B, const int dim, int num_args, char *args[])
             }
         }
 
-        // Convert to double and keep parseEnding
+        // Convert to double
         char *pEnd;
         double parsed_arg = strtod(curr_arg, &pEnd);
 
@@ -128,9 +130,11 @@ int parseInput(Matrix B, const int dim, int num_args, char *args[])
 // Returns 1 if linearly dependent
 int isLinearlyDependent(Matrix Bs, const int dim)
 {
+    // Values may not be exactly zero
     double TOLERANCE = (double)1 / 100000000000;
     for (int i = dim - 1; i >= 0; i--)
     {
+        // dependent = 1 if current vector contains all zeros
         Vector v = Bs[i];
         int dependent = 1;
         for (int j = 0; j < dim; j++)

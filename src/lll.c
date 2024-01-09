@@ -6,8 +6,10 @@
 #include "matrix.h"
 #include "gram_schmidt.h"
 
+// Macro to calculate max of two values
 #define max_int(x, y) (((x) >= (y)) ? (x) : (y))
 
+// Size reduction of vector Bk
 void size_reduce_bk(Matrix B, Matrix mu, const int dim, const int k)
 {
     for (int j = k - 1; j >= 0; j--)
@@ -16,7 +18,7 @@ void size_reduce_bk(Matrix B, Matrix mu, const int dim, const int k)
         {
             __int64_t mu_rounded = (__int64_t)round(mu[k][j]);
 
-            // Update bk
+            // Update Bk
             for (int i = 0; i < dim; i++)
             {
                 B[k][i] -= mu_rounded * B[j][i];
@@ -34,10 +36,14 @@ void size_reduce_bk(Matrix B, Matrix mu, const int dim, const int k)
 
 void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim)
 {
+    // Extract B-star and mu matrices for code readability
     Matrix Bs = gs_info->Bs;
     Matrix mu = gs_info->mu;
 
+    // Store certain inner-products
     long double inner_products[dim];
+
+    // Stores if GS was recomputed on the previous iteration
     int first_iter = 1;
 
     int k = 1;
@@ -45,6 +51,10 @@ void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim)
     {
         size_reduce_bk(B, mu, dim, k);
 
+        // This could be simplified however this is an optimisation,
+        // In between gram_schmidt calls, the values of B-star do not change
+        // This means ip_Bs_k on one iteration will be ip_Bs_k-1 on the next
+        // because k increments
         long double ip_Bs_k = inner_product(Bs[k], Bs[k], dim);
         long double lovasz = (delta - (mu[k][k - 1]) * (mu[k][k - 1]));
         long double ip_Bs_k_1;

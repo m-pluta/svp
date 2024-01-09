@@ -7,6 +7,7 @@ double hermite_constant(const int dim)
     return 1 + (double)dim / 4;
 }
 
+// Return volL which is the product of the norms of the basis vectors
 double volL(const Matrix Bs, const int dim)
 {
     double volL = 1.0;

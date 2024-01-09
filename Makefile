@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -O3
+CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -O3 -march=native
 DFLAGS = -pg -O1
 
 TESTCASE = [41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19 29] [12 4 69 155 39]
@@ -28,7 +28,7 @@ again:
 callgrind: clean
 	make again
 	$(CC) -o runme $(SRCS) $(CFLAGS) $(DFLAGS)
-	valgrind --tool=callgrind ./freddy $(TESTCASE)
+	valgrind --tool=callgrind ./runme $(TESTCASE)
 	kcachegrind callgrind.out.*
 
 hyperfine:
