@@ -1,3 +1,4 @@
+import glob
 import subprocess
 import os
 import csv
@@ -7,8 +8,13 @@ import re
 TEST_DIR = 'tests/'
 TEST_FILE = os.path.join(TEST_DIR, 'test-gen.csv')
 RESULT_FILE = os.path.join(TEST_DIR, 'test-result.csv')
+
 TIMEOUT = 60
-HYPERFINE_WARMUP = '1000'
+HYPERFINE_WARMUP = 0
+MIN_RUNS = 5
+MAX_RUNS = 10
+HYPERFINE_FILE = os.path.join(TEST_DIR, 'hyperfine.csv')
+VALGRIND_FILE = os.path.join(TEST_DIR, 'valgrind.csv')
 
 def setup():
     if not os.path.exists(TEST_FILE):
@@ -18,61 +24,102 @@ def setup():
     with open(RESULT_FILE, 'w') as file:
         file.write('seed,lattice_type,dimension,bit_level,'
                    'lattice,expected_answer,actual_answer,'
-                   'mean,sd,user,system,min,max,runs\n')
+                   'mean,stddev,median,user,system,min,max,'
+                   'total_bytes,total_blocks,bytes_at_tgmax,'
+                   'blocks_at_tgmax,bytes_at_tend,'
+                   'blocks_at_tend,reads, writes\n')
+
 
 def make(command: str):
     try:
         subprocess.run(['make', command], check=True)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-
-def extract_hyperfine(stdout: str):
-    lines = stdout.strip().split('\n')
-
-    if len(lines) >= 3:
-        time_values = re.findall(r'[\d.]+ (?:\w|run)?s', lines[1] + lines[2])
-
-        for i, time_value in enumerate(time_values):
-            value = float(re.match(r'([\d.]+)', time_value).group())
-            if 'µs' in time_value:
-                time_values[i] = f'{round(value / 1_000_000, 7):.7f}'
-            elif 'ms' in time_value:
-                time_values[i] = str(round(value / 1_000, 4))
-            elif 'runs' in time_value:
-                time_values[i] = str(int(value))
         
-        return time_values
+def remove_dhat_files():
+    for filename in glob.glob('dhat.out.*'):
+        os.remove(filename)
+        
+def remove_hyperfine_file():
+    if os.path.exists(HYPERFINE_FILE):
+        os.remove(HYPERFINE_FILE)
 
 def run_hyperfine(lattice: str):
+    command = ['hyperfine',
+               '--warmup', str(HYPERFINE_WARMUP),
+               '--min-runs', str(MIN_RUNS),
+               '--max-runs', str(MAX_RUNS),
+               '-u', 'second',
+               '--export-csv', HYPERFINE_FILE,
+               f'./runme {lattice}']
+
     try:
-        hyperfine = subprocess.run(['hyperfine', '--warmup', HYPERFINE_WARMUP,
-                                    '--min-runs', '5',
-                                    '--max-runs', '20',
-                                    f'./runme {lattice}'],
-                                    check=True, capture_output=True, text=True,
-                                    timeout=TIMEOUT)
+        subprocess.run(command, check=True, capture_output=True,
+                       text=True, timeout=TIMEOUT)
+
         with open('result.txt', 'r') as result_file:
             answer = result_file.read()
 
-        return (answer, extract_hyperfine(hyperfine.stdout))
+        with open(HYPERFINE_FILE, 'r') as hyperfine_file:
+            csv_reader = csv.reader(hyperfine_file)
+            
+            next(csv_reader)
+            timings = list(next(csv_reader))[1:]
+        
+        remove_hyperfine_file()
+
+        return [answer] + timings
     except subprocess.TimeoutExpired:
         print(f"Subprocess timed out after {TIMEOUT} seconds.")
-        return ('-1.0', [])
+        return ['TIMEOUT']
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-        return ('-2.0', [])
+        return ['ERROR']
+    
+def run_valgrind(lattice: str):
+    command = ['valgrind', '--tool=dhat', './runme', *lattice.split()]
+
+    try:
+        valgrind = subprocess.run(command, capture_output=True,
+                                  text=True, timeout=TIMEOUT)
+        
+        remove_dhat_files()
+        
+        pattern = re.compile(r"(\d{1,3}(?:,\d{3})*) (?:blocks|bytes)")
+
+        if os.path.exists('dhat.out.*'):
+            os.remove('dhat.out.*')
+
+        # Extract the values
+        values = pattern.findall(valgrind.stderr)
+        for value in values:
+            value = value.replace(',', '')
+
+        return values
+    except subprocess.TimeoutExpired:
+        print(f"Subprocess timed out after {TIMEOUT} seconds.")
+        return ['TIMEOUT']
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+        return ['ERROR']
+
 
 def run(lattice: str):
     try:
-        subprocess.run(['./runme', *lattice.split(' ')], check=True, timeout=TIMEOUT)
+        subprocess.run(['./runme', *lattice.split(' ')],
+                       check=True, timeout=TIMEOUT)
+
         with open('result.txt', 'r') as result_file:
-            return result_file.read()
+            return [result_file.read()]
+
     except subprocess.TimeoutExpired:
         print(f"Subprocess timed out after {TIMEOUT} seconds.")
-        return '-1.0'
+        return ['TIMEOUT']
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
-        return '-2.0'
+        return ['ERROR']
+
+
 if __name__ == '__main__':
     setup()
     make('all')
@@ -83,13 +130,12 @@ if __name__ == '__main__':
 
         # Iterate over each test case
         for i, test_case in enumerate(csv_reader):
-            answer, hyperfine_stats = run_hyperfine(test_case[4])
-            # answer = run(test_case[4])
-
-            data = list(test_case) + [answer] + hyperfine_stats
-            # data = list(test_case) + [answer]
-
-            csv_writer.writerow(data)
+            timing_stats = run_hyperfine(test_case[4])
+            memory_stats = run_valgrind(test_case[4])
+            csv_writer.writerow(test_case + timing_stats + memory_stats)
             print(i)
+            
+    remove_hyperfine_file()
+    remove_dhat_files()
 
     make('clean')

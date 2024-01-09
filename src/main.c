@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-    printf("N: %d\n", N);
+    // printf("N: %d\n", N);
 
     // Malloc the basis
     Matrix B = mallocMatrix(N);
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
         printf("Invalid Input: The input vectors are not linearly independent\n");
         return 1;
     }
-    LLL(B, gs_info, 0.99999999, N);
+    LLL(B, gs_info, 0.99, N);
     gram_schmidt(B, gs_info, N);
 
     double bound = lambda_1_squared(gs_info->Bs, N);
