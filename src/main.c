@@ -1,45 +1,13 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
+#include "input_validation.h"
 #include "matrix.h"
 #include "bound.h"
 #include "gram_schmidt.h"
 #include "lll.h"
 #include "schnorr_euchner.h"
 
-int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
-    int curr_vector = 0;
-    int curr_element = 0;
-
-    if (num_args - 1 != dim * dim) {
-        printf("Input Basis Dimension Mismatch");
-        return 1;
-    }
-
-    for (int i = 1; i < num_args; i++) {
-        if (curr_vector >= dim && curr_element != 0) {
-            printf("Input Basis Dimension Mismatch");
-            return 1;
-        }
-
-        char* curr_arg = args[i];
-        // printf("Input : %s\n", curr_arg);
-
-        if (curr_arg[0] == '[') {
-            curr_arg++;
-        }
-
-        B[curr_vector][curr_element++] = strtod(curr_arg, NULL);
-
-        if (curr_arg[strlen(curr_arg) - 1] == ']') {
-            curr_vector++;
-            curr_element = 0;
-        }
-    }
-
-    return 0;
-}
 
 void writeResultToFile(const double result) {
     FILE *file = fopen("result.txt", "w");
@@ -66,7 +34,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    // printf("N: %d\n", N);
+    printf("N: %d\n", N);
 
     // Malloc the basis
     Matrix B = mallocMatrix(N);
@@ -78,14 +46,13 @@ int main(int argc, char *argv[]) {
     // Parse the input
     int res = parseInput(B, N, argc, argv);
     if (res == 1) {
-        printf("Failed to parse input basis");
         freeMatrix(B, N);
         return 1;
     }
 
     GS_Info *gs_info = mallocGS_Info(N);
     gram_schmidt(B, gs_info, N);
-    LLL(B, gs_info, 0.99, N);
+    LLL(B, gs_info, 0.99999999, N);
     gram_schmidt(B, gs_info, N);
 
     double bound = lambda_1_squared(gs_info->Bs, N);
