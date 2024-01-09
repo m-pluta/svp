@@ -8,11 +8,10 @@
 #include "lll.h"
 #include "schnorr_euchner.h"
 
-
 void writeResultToFile(const double result) {
     FILE *file = fopen("result.txt", "w");
     if (file != NULL) {
-        fprintf(file, "%lf", result);
+        fprintf(file, "%.12f", result);
         fclose(file);
     } else {
         perror("Unable to open 'result.txt' for writing");

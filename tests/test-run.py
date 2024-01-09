@@ -45,7 +45,12 @@ def extract_hyperfine(stdout: str):
 
 def run_hyperfine(lattice: str):
     try:
-        hyperfine = subprocess.run(['hyperfine', '--warmup', HYPERFINE_WARMUP, '-N', f'./runme {lattice}'], check=True, capture_output=True, text=True, timeout=TIMEOUT)
+        hyperfine = subprocess.run(['hyperfine', '--warmup', HYPERFINE_WARMUP,
+                                    '--min-runs', '5',
+                                    '--max-runs', '20',
+                                    f'./runme {lattice}'],
+                                    check=True, capture_output=True, text=True,
+                                    timeout=TIMEOUT)
         with open('result.txt', 'r') as result_file:
             answer = result_file.read()
 
@@ -78,11 +83,11 @@ if __name__ == '__main__':
 
         # Iterate over each test case
         for i, test_case in enumerate(csv_reader):
-            # answer, hyperfine_stats = run_hyperfine(test_case[4])
-            answer = run(test_case[4])
+            answer, hyperfine_stats = run_hyperfine(test_case[4])
+            # answer = run(test_case[4])
 
-            # data = list(test_case) + [answer] + hyperfine_stats
-            data = list(test_case) + [answer]
+            data = list(test_case) + [answer] + hyperfine_stats
+            # data = list(test_case) + [answer]
 
             csv_writer.writerow(data)
             print(i)
