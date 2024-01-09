@@ -2,20 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "matrix.h"
 
-int checkValidArgument(char* c) {
+// Returns 1 if argument is valid
+int isValidArgument(char* c) {
     while (*c != '\0') {
         if (isdigit(*c) || *c == ']' || *c == '[' || *c == '.' || *c == '+' || *c == '-') {
             c++;
         } else {
-            return 1;
+            return 0;
         }
     }
-    return 0;
+    return 1;
 }
 
+// Returns 1 if parsing encountered an error
 int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
     if (num_args - 1 != dim * dim) {
         printf("Invalid Input: Wrong amount of arguments for square basis\n");
@@ -43,7 +46,7 @@ int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
         int arg_length = strlen(curr_arg);
 
         // Check if argument contains illegal characters
-        if (checkValidArgument(curr_arg) == 1) {
+        if (isValidArgument(curr_arg) == 0) {
             printf("Invalid Input: Vector %d, element %d contains illegal characters\n", curr_v + 1, curr_e + 1);
             return 1;
         }
@@ -71,5 +74,24 @@ int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
         }
     }
 
+    return 0;
+}
+
+// Returns 1 if linearly dependent
+int isLinearlyDependent(Matrix Bs, const int dim) {
+    double TOLERANCE = (double) 1 / 1000000000;
+    for (int i = dim - 1; i >= 0; i--) {
+        Vector v = Bs[i];
+        int dependent = 1;
+        for (int j = 0; j < dim; j++) {
+            if (fabs(v[j]) > TOLERANCE) {
+                dependent = 0;
+                break;
+            }
+        }
+        if (dependent) {
+            return 1;
+        }
+    }
     return 0;
 }

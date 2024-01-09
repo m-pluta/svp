@@ -52,6 +52,12 @@ int main(int argc, char *argv[]) {
 
     GS_Info *gs_info = mallocGS_Info(N);
     gram_schmidt(B, gs_info, N);
+    if (isLinearlyDependent(gs_info->Bs, N)) {
+        freeMatrix(B, N);
+        freeGSInfo(gs_info, N);
+        printf("Invalid Input: The input vectors are not linearly independent\n");
+        return 1;
+    }
     LLL(B, gs_info, 0.99999999, N);
     gram_schmidt(B, gs_info, N);
 
