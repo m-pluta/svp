@@ -6,65 +6,65 @@
 
 #include "matrix.h"
 
-// Returns 1 if argument is valid
-int isValidArgument(char* c) {
-    while (*c != '\0') {
-        if (isdigit(*c) || *c == ']' || *c == '[' || *c == '.' || *c == '+' || *c == '-') {
-            c++;
-        } else {
-            return 0;
-        }
-    }
-    return 1;
-}
-
 // Returns 1 if parsing encountered an error
-int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
-    if (num_args - 1 != dim * dim) {
+int parseInput(Matrix B, const int dim, int num_args, char *args[]) {
+    // Remove ./runme from args
+    num_args--;
+    args++;
+
+    // Check num_args == dim *dim
+    if (num_args != dim * dim) {
         printf("Invalid Input: Wrong amount of arguments for square basis\n");
         return 1;
     }
 
-    if (args[1][0] != '[') {
+    // Check first arg has an opening bracket
+    if (args[0][0] != '[') {
         printf("Invalid Input: No opening bracket for first vector\n");
         return 1;
     }
 
-    
-    int curr_v = 0; // Current vector being parsed
+    // Keep track of which vector is currently being parsed
+    int curr_v = 0;
     int curr_e = 0;
 
-    for (int i = 1; i < num_args; i++) {
-        
-        // Skip first character if its an opening bracket
+    for (int i = 0; i < num_args; i++) {
         char* curr_arg = args[i];
-        if (curr_e == 0 && curr_arg[0] == '[') {
-            curr_arg++;
+
+        // Skip first character if its an opening bracket
+        if (curr_arg[0] == '[') {
+            if (curr_e == 0) {
+                curr_arg++;
+            } else {
+                printf("Invalid Input\n");
+                return 1;
+            }
         }
 
-        // Get length of argument
-        int arg_length = strlen(curr_arg);
+        // Convert to double and keep parseEnding
+        char* pEnd;
+        double parsed_arg = strtod(curr_arg, &pEnd);
 
-        // Check if argument contains illegal characters
-        if (isValidArgument(curr_arg) == 0) {
-            printf("Invalid Input: Vector %d, element %d contains illegal characters\n", curr_v + 1, curr_e + 1);
-            return 1;
+        // Process closing bracket
+        int closing_bracket = pEnd[0] == ']';
+        if (closing_bracket && curr_e == dim - 1) {
+            pEnd++;
         }
 
-        // Convert argument to double
-        B[curr_v][curr_e] = strtod(curr_arg, NULL);
-
-        int closing_bracket = curr_arg[arg_length - 1] == ']';
-        // Check if closing bracket hasn't appeared
+        // No closing bracket where it was expected
         if (curr_e == dim - 1 && !closing_bracket) {
             printf("Invalid Input: Vector %d is not the correct dimension, expected size: %d\n", curr_v + 1, dim);
             return 1;
         }
-        // Check if closing bracket appeared too early
-        if (curr_e < dim - 1 && closing_bracket) {
-            printf("Invalid Input: Vector %d is not the correct dimension, expected size: %d\n", curr_v + 1, dim);
+
+        // There is still more to parse, so must be invalid input
+        if (pEnd[0] != '\0') {
+            printf("Invalid Input\n");
             return 1;
         }
+
+        // Store the parsed value
+        B[curr_v][curr_e] = parsed_arg;
 
         // Move to next position to parse into
         curr_e++;
@@ -72,6 +72,12 @@ int parseInput(Matrix B, const int dim, const int num_args, char *args[]) {
             curr_v++;
             curr_e = 0;
         }
+    }
+
+    // If user entered [0] or [0.0] etc then this is handled
+    if (dim == 1 && B[0][0] == 0) {
+        printf("Invalid Input\n");
+        return 1;
     }
 
     return 0;
