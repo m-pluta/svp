@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-typedef double* Vector;
+typedef double *Vector;
 
 Vector mallocVector(const int dim);
 void freeVector(Vector v);

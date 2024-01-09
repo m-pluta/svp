@@ -8,19 +8,25 @@
 #include "lll.h"
 #include "schnorr_euchner.h"
 
-void writeResultToFile(const double result) {
+void writeResultToFile(const double result)
+{
     FILE *file = fopen("result.txt", "w");
-    if (file != NULL) {
+    if (file != NULL)
+    {
         fprintf(file, "%.12f", result);
         fclose(file);
-    } else {
+    }
+    else
+    {
         perror("Unable to open 'result.txt' for writing");
     }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // Check number of arguments
-    if (argc == 1) {
+    if (argc == 1)
+    {
         printf("No basis provided");
         printf("Usage: %s [x1 y1 ...] [x2 y2 ...] ...\n", argv[0]);
         return 1;
@@ -28,10 +34,14 @@ int main(int argc, char *argv[]) {
 
     // Calculate size of first input vector
     int N;
-    for (N = 1; N < argc; N++) {
-        if (argv[N][strlen(argv[N]) - 1] == ']') {
+    for (N = 1; N < argc; N++)
+    {
+        if (argv[N][strlen(argv[N]) - 1] == ']')
+        {
             break;
-        } else if (N == argc - 1) {
+        }
+        else if (N == argc - 1)
+        {
             printf("Invalid Input: No closing bracket\n");
             return 1;
         }
@@ -40,21 +50,24 @@ int main(int argc, char *argv[]) {
 
     // Malloc the basis
     Matrix B = mallocMatrix(N);
-    if (B == NULL) {
+    if (B == NULL)
+    {
         printf("Failed to malloc Matrix: B");
         return 1;
     }
 
     // Parse the input
     int res = parseInput(B, N, argc, argv);
-    if (res == 1) {
+    if (res == 1)
+    {
         freeMatrix(B, N);
         return 1;
     }
 
     GS_Info *gs_info = mallocGS_Info(N);
     gram_schmidt(B, gs_info, N);
-    if (isLinearlyDependent(gs_info->Bs, N)) {
+    if (isLinearlyDependent(gs_info->Bs, N))
+    {
         freeMatrix(B, N);
         freeGSInfo(gs_info, N);
         printf("Invalid Input: The input vectors are not linearly independent\n");
