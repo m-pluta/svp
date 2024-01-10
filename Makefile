@@ -42,10 +42,9 @@ memusage:
 #Simple test suite
 test:
 	make runme
-	$(CC) -o test $(TEST_DIR)test.c $(CFLAGS)
+	$(CC) $(TEST_DIR)test.c -o test $(CFLAGS)
 	./test
-	# make clean
-
+	make clean
 
 # Clean rule to remove generated files
 clean:

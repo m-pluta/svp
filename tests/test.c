@@ -3,15 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-// Struct to store a test-case
-typedef struct
-{
-    char *lattice_type;
-    int dimension;
-    int bit_level;
-    char *lattice;
-    double expected;
-} Testcase;
+#include "test.h"
 
 char *readLine(FILE *file)
 {
