@@ -73,11 +73,22 @@ void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim)
                 printf("mu[i][k]           =%.60f\n", mu[i][k]);
                 printf("Bs[k][j]           =%.60f\n", Bs[k][j]);
                 printf("Bs[i][j]           =%.60f\n", Bs[i][j]);
-                printf("mu[i][k] * Bs[k][j]=%.60f\n", mu[i][k] * Bs[k][j]);
-                Bs[i][j] -= mu[i][k] * Bs[k][j];
-                if (Bs[i][j] == mu[i][k] * Bs[k][j]) {
-                    printf("THEY ARE THE SAME");
+                if (Bs[i][j] == 3763617828) {
+                    printf("true");
                 }
+                if (mu[i][k] * Bs[k][j] == 3763617828) {
+                    printf("true");
+                }
+                printf("mu[i][k] * Bs[k][j]=%.60f\n", mu[i][k] * Bs[k][j]);
+                // if (Bs[i][j] == mu[i][k] * Bs[k][j]) {
+                //     printf("THEY ARE THE SAME\n");
+                // }
+                double test = (mu[i][k] * Bs[k][j]);
+                if (test == 3763617828) {
+                    printf("test is correct\n");
+                }
+                printf("test               =%.60f\n", test);
+                Bs[i][j] -= test;
                 printf("Bs[i][j]           =%.60f\n\n", Bs[i][j]);
             }
         }

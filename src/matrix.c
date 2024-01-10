@@ -62,7 +62,7 @@ void printMatrix(const Matrix m, const int dim)
             {
                 printf(" ");
             }
-            printf("%8.4f", m[i][j]);
+            printf("%8.60f", m[i][j]);
         }
         printf("]\n");
     }

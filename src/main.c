@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 
     // Malloc the GS_Info struct and perform Gram Schmidt Procedure
     GS_Info *gs_info = mallocGS_Info(N);
+
     gram_schmidt(B, gs_info, N);
 
     // // Check if Basis is linearly independent
