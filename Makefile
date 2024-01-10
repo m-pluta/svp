@@ -44,7 +44,7 @@ test:
 	make runme
 	$(CC) -o test $(TEST_DIR)test.c $(CFLAGS)
 	./test
-	make clean
+	# make clean
 
 
 # Clean rule to remove generated files
