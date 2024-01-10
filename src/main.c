@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
     // Perform LLL to get the LLL reduced basis
     // Perform a subsequent GS to update
-    LLL(B, gs_info, 0.99, N);
+    LLL(B, gs_info, 0.75, N);
     gram_schmidt(B, gs_info, N);
 
     // Calculate the Minkowski Bound

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "vector.h"
 #include "matrix.h"
@@ -56,10 +57,7 @@ void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim)
     for (int i = 0; i < dim; i++)
     {
         // Copy Basis into Bs
-        for (int j = 0; j < dim; j++)
-        {
-            Bs[i][j] = B[i][j];
-        }
+        memcpy(Bs[i], B[i], dim * sizeof(double)); 
 
         // Orthogonalise the basis
         for (int k = 0; k < i; k++)
