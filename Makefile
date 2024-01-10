@@ -41,27 +41,15 @@ memusage:
 
 #Simple test suite
 test:
-	@make --no-print-directory all
-	@echo "Starting tests"
-	@make --no-print-directory do_run EXPECTED="1.414214" LATTICE="[3.0 2.0] [1.0 -1.0]"
-	@make --no-print-directory do_run EXPECTED="1.414214" LATTICE="[3.0 -70.0 2.0] [1.0 0.0 -1.0] [0.0 -7.0 9.0]"
-	@make --no-print-directory do_run EXPECTED="138.654246" LATTICE="[87 247] [147 122]"
-	@make --no-print-directory do_run EXPECTED="115.0" LATTICE="[3164876632.0 1.0 0.0 0.0] [2493630228.0 0.0 1.0 0.0] [1060187369.0 0.0 0.0 1.0] [2699093087.0 0.0 0.0 0.0]"
-	@echo "Tests finished"
-	@make --no-print-directory clean
+	make runme
+	$(CC) -o test $(TEST_DIR)test.c $(CFLAGS)
+	./test
+	make clean
 
-do_run:
-	@echo $(LATTICE)
-	@./runme $(LATTICE)
-	@echo -n "Expected: "
-	@echo $(EXPECTED)
-	@echo -n "Actual:   "
-	@cat result.txt
-	@echo
 
 # Clean rule to remove generated files
 clean:
-	rm -rf runme $(OBJS) result.txt gmon.out callgrind.out.*
+	rm -rf runme test $(OBJS) result.txt gmon.out callgrind.out.*
 
 clean-test:
 	rm -rf $(TEST_DIR)test-gen.csv $(TEST_DIR)test-result.csv
