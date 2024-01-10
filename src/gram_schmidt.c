@@ -58,15 +58,27 @@ void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim)
     {
         // Copy Basis into Bs
         memcpy(Bs[i], B[i], dim * sizeof(double)); 
-
         // Orthogonalise the basis
         for (int k = 0; k < i; k++)
         {
+            printVector(Bs[1], dim);
+            printf("i=%d, k=%d\n", i, k);
             double ip = inner_product(B[i], Bs[k], dim);
             mu[i][k] = ip / inner_products[k];
+            // printVector(B[i], dim);
+            // printVector(Bs[k], dim);
             for (int j = 0; j < dim; j++)
-            {
+                       {
+                           
+                printf("mu[i][k]           =%.60f\n", mu[i][k]);
+                printf("Bs[k][j]           =%.60f\n", Bs[k][j]);
+                printf("Bs[i][j]           =%.60f\n", Bs[i][j]);
+                printf("mu[i][k] * Bs[k][j]=%.60f\n", mu[i][k] * Bs[k][j]);
                 Bs[i][j] -= mu[i][k] * Bs[k][j];
+                if (Bs[i][j] == mu[i][k] * Bs[k][j]) {
+                    printf("THEY ARE THE SAME");
+                }
+                printf("Bs[i][j]           =%.60f\n\n", Bs[i][j]);
             }
         }
 

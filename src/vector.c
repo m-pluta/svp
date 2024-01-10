@@ -32,7 +32,7 @@ void printVector(const Vector v, const int dim)
         {
             printf(" ");
         }
-        printf("%8.4f", v[i]);
+        printf("%6.14f", v[i]);
     }
     printf("]\n");
 }

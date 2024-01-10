@@ -75,6 +75,7 @@ void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim)
 
             // Go to next vector in basis
             k += 1;
+            break;
         }
         else
         {

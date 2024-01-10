@@ -75,32 +75,32 @@ int main(int argc, char *argv[])
     GS_Info *gs_info = mallocGS_Info(N);
     gram_schmidt(B, gs_info, N);
 
-    // Check if Basis is linearly independent
-    if (isLinearlyDependent(gs_info->Bs, N))
-    {
-        freeMatrix(B, N);
-        freeGSInfo(gs_info, N);
-        printf("Invalid Input: The input vectors are not linearly independent\n");
-        return 1;
-    }
+    // // Check if Basis is linearly independent
+    // if (isLinearlyDependent(gs_info->Bs, N))
+    // {
+    //     freeMatrix(B, N);
+    //     freeGSInfo(gs_info, N);
+    //     printf("Invalid Input: The input vectors are not linearly independent\n");
+    //     return 1;
+    // }
 
-    // Perform LLL to get the LLL reduced basis
-    // Perform a subsequent GS to update
-    LLL(B, gs_info, 0.75, N);
-    gram_schmidt(B, gs_info, N);
+    // // Perform LLL to get the LLL reduced basis
+    // // Perform a subsequent GS to update
+    // LLL(B, gs_info, 0.99, N);
+    // gram_schmidt(B, gs_info, N);
 
-    // Calculate the Minkowski Bound
-    double bound = lambda_1_squared(gs_info->Bs, N);
-    // printf("Bound: %.6f\n", bound);
+    // // Calculate the Minkowski Bound
+    // double bound = lambda_1_squared(gs_info->Bs, N);
+    // // printf("Bound: %.6f\n", bound);
 
-    // Perform Schnorr-Euchner enumeration
-    double result = schorr_euchner(N, gs_info, bound);
-    // printf("%8.8f\n", result);
+    // // Perform Schnorr-Euchner enumeration
+    // double result = schorr_euchner(N, gs_info, bound);
+    // // printf("%8.8f\n", result);
 
-    writeResultToFile(result);
+    // writeResultToFile(result);
 
-    // Free allocated memory
-    freeGSInfo(gs_info, N);
-    freeMatrix(B, N);
-    return 0;
+    // // Free allocated memory
+    // freeGSInfo(gs_info, N);
+    // freeMatrix(B, N);
+    // return 0;
 }
