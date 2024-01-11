@@ -45,10 +45,10 @@ test: runme
 	make clean
 
 clean:
-	rm -rf runme test $(OBJS) result.txt gmon.out callgrind.out.* dhat.out.*
+	rm -rf runme test $(OBJS) result.txt gmon.out callgrind.out.* dhat.out.* $(TEST_DIR)hyperfine.csv
 
-clean-test:
-	rm -rf $(TEST_DIR)test-gen.csv $(TEST_DIR)test-result.csv
+clean-test-result:
+	rm -rf $(TEST_DIR)test-result.csv
 
 # Requires 'fplll' and 'bc' commands in bash
 run-test: runme
