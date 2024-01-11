@@ -15,7 +15,7 @@ SRCS = $(wildcard $(DIR)*.c)
 OBJS = $(SRCS:.c=.o)
 
 # The main target
-all: runme
+all: runme $(OBJS)
 
 # Target to build the executable
 runme: $(OBJS)
