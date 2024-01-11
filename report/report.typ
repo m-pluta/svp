@@ -3,4 +3,22 @@
 \
 Michal
 \
+Word Count: 750
+
 #set align(left)
+
+== Approach
+
+
+
+=== Chosen Algorithm
+
+== Accuracy
+
+== Time
+
+== Memory
+
+== Overall Success
+
+#bibliography("works.bib")
