@@ -1,18 +1,14 @@
-CC = gcc
-CFLAGS = -I. -Werror -Wpedantic -Wall -Wextra -lm -O3 -march=native
-DFLAGS = -pg -O1
+CC=gcc
+CFLAGS=-I. -Werror -Wpedantic -Wall -Wextra -lm -O3
+DFLAGS=-pg -O1
 
-TESTCASE = [41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19 29] [12 4 69 155 39]
+TESTCASE=[41 3 55 139 186] [62 128 99 8 88] [25 54 158 58 200] [225 160 102 19 29] [12 4 69 155 39]
 
-# Directory variable
-DIR = src/
-TEST_DIR = tests/
-
-# List of source files
-SRCS = $(wildcard $(DIR)*.c)
-
-# List of object files
-OBJS = $(SRCS:.c=.o)
+DIR=src/
+TEST_DIR=tests/
+SRCS=$(wildcard $(DIR)*.c)
+OBJS=$(SRCS:.c=.o)
+DEPS=$(OBJS:.o=.d)
 
 # The main target
 all: runme
@@ -21,41 +17,44 @@ all: runme
 runme: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
-again:
-	make clean
-	make runme
+%.o: %.c
+	$(CC) -c $< -o $@ $(CFLAGS)
 
-callgrind: clean
-	make again
+again: clean runme
+
+callgrind: runme
 	$(CC) -o runme $(SRCS) $(CFLAGS) $(DFLAGS)
 	valgrind --tool=callgrind ./runme $(TESTCASE)
 	kcachegrind callgrind.out.*
+	make clean
 
-hyperfine:
-	make again
-	hyperfine "./runme $(TESTCASE)" > hyperfine.txt
+hyperfine: runme
+	hyperfine "./runme $(TESTCASE)"
+	make clean
 
-memusage:
-	make again
-	memusage -T ./runme $(TESTCASE) |&grep -E -o 'heap total: [0-9]+' >> out 2>&1
+memory: runme
+	memusage -T ./runme $(TESTCASE)
+	valgrind ./runme $(TESTCASE)
+	valgrind --tool=dhat ./runme $(TESTCASE)
+	make clean
 
-#Simple test suite
-test:
-	make runme
+# Run test suite
+test: runme
 	$(CC) $(TEST_DIR)test.c -o test $(CFLAGS)
 	./test
 	make clean
 
-# Clean rule to remove generated files
 clean:
-	rm -rf runme test $(OBJS) result.txt gmon.out callgrind.out.*
+	rm -rf runme test $(OBJS) result.txt gmon.out callgrind.out.* dhat.out.*
 
 clean-test:
 	rm -rf $(TEST_DIR)test-gen.csv $(TEST_DIR)test-result.csv
 
-run-test:
+# Requires 'fplll' and 'bc' commands in bash
+run-test: runme
 	python3 $(TEST_DIR)test-gen-all.py
 	python3 $(TEST_DIR)test-run.py
+	make clean
 
 cpplint:
 	cpplint $(SRCS)
