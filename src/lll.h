@@ -1,9 +1,9 @@
 #ifndef LLL_H
 #define LLL_H
 
-#include "vector2d.h"
+#include "matrix.h"
 #include "gram_schmidt.h"
 
-void LLL(Vector2D *B, GS_Info *gs_info, const double delta, const int dim);
+void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim);
 
 #endif // LLL_H

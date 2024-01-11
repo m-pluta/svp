@@ -1,83 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "vector.h"
-#include "vector2d.h"
+#include "matrix.h"
 #include "gram_schmidt.h"
 
-void freeGSInfo(GS_Info *gs_info, const int dim) {
-    freeVector2D(gs_info->mu, dim);
-    freeVector2D(gs_info->Bs, dim);
-    free(gs_info);
-}
-
-GS_Info* gram_schmidt(const Vector2D *B, const int dim) {
-    Vector2D *mu = mallocVector2D(dim);
-    if (mu == NULL) {
-        printf("Failed to malloc Vector2D: mu");
-        return NULL;
-    }
-    Vector2D *Bs = mallocVector2D(dim);
-    if (Bs == NULL) {
-        printf("Failed to malloc Vector2D: Bs");
-        freeVector2D(mu, dim);
-        return NULL;
-    }
-    GS_Info* gs_info = malloc(sizeof(GS_Info));
+GS_Info *mallocGS_Info(const int dim) {
+    // Malloc the struct
+    GS_Info *gs_info = malloc(sizeof(GS_Info));
     if (gs_info == NULL) {
-        printf("Failed to malloc Gram_Schmidt_Information: gs_info");
-        freeVector2D(mu, dim);
-        freeVector2D(Bs, dim);
+        printf("Failed to malloc Gram_Schmidt_Information");
         return NULL;
     }
 
-    double *inner_products = malloc(dim * sizeof(double));
-
-    for (int i = 0; i < dim; i++) {
-        for (int j = 0; j < dim; j++) {
-            Bs->v[i]->e[j] = B->v[i]->e[j];
-        }
-
-        for (int k = 0; k < i; k++) {
-            double ip = inner_product(B->v[i], Bs->v[k], dim);
-            mu->v[i]->e[k] = ip / inner_products[k];
-            for (int j = 0; j < dim; j++) {
-                Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
-            }
-        }
-
-        // Store calculation for later computations
-        inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
+    // Attempt to malloc the mu matrix
+    gs_info->mu = mallocMatrix(dim);
+    if (gs_info->mu == NULL) {
+        free(gs_info);
+        printf("Failed to malloc Matrix: mu");
+        return NULL;
     }
 
-    free(inner_products);
+    // Attempt to malloc the B-star matrix
+    gs_info->Bs = mallocMatrix(dim);
+    if (gs_info->Bs == NULL) {
+        free(gs_info->mu);
+        free(gs_info);
+        printf("Failed to malloc Matrix: Bs");
+        return NULL;
+    }
 
-    gs_info->mu = mu;
-    gs_info->Bs = Bs;
+    // Attempt to malloc the inner_products array for memoisation
+    gs_info->inner_products = malloc(dim * sizeof(double));
+    if (gs_info->inner_products == NULL) {
+        free(gs_info->mu);
+        free(gs_info->Bs);
+        free(gs_info);
+        printf("Failed to malloc inner products array");
+        return NULL;
+    }
 
     return gs_info;
 }
 
-void gram_schmidt_in_place(Vector2D *B, GS_Info *gs_info, const int dim) {
-    Vector2D *Bs = gs_info->Bs;
-    Vector2D *mu = gs_info->mu;
-    double *inner_products = malloc(dim * sizeof(double));
+void freeGSInfo(GS_Info *gs_info, const int dim) {
+    freeMatrix(gs_info->mu, dim);
+    freeMatrix(gs_info->Bs, dim);
+    free(gs_info->inner_products);
+    free(gs_info);
+    gs_info = NULL;
+}
+
+void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim) {
+    // Extract mu and Bs for readability
+    Matrix Bs = gs_info->Bs;
+    Matrix mu = gs_info->mu;
+
+    // Memoise the inner products throughout execution for performance
+    double* inner_products = gs_info->inner_products;
 
     for (int i = 0; i < dim; i++) {
-        for (int j = 0; j < dim; j++) {
-            Bs->v[i]->e[j] = B->v[i]->e[j];
-        }
+        // Copy Basis into Bs
+        memcpy(Bs[i], B[i], dim * sizeof(double));
 
+        // Orthogonalise the basis
         for (int k = 0; k < i; k++) {
-            double ip = inner_product(B->v[i], Bs->v[k], dim);
-            mu->v[i]->e[k] = ip / inner_products[k];
+            double ip = inner_product(B[i], Bs[k], dim);
+            mu[i][k] = ip / inner_products[k];
             for (int j = 0; j < dim; j++) {
-                Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
+                Bs[i][j] -= mu[i][k] * Bs[k][j];
             }
         }
 
-        // Store calculation for later computations
-        inner_products[i] = inner_product(Bs->v[i], Bs->v[i], dim);
+        // Store calculation of inner product for later computation
+        inner_products[i] = inner_product(Bs[i], Bs[i], dim);
     }
-    free(inner_products);
 }

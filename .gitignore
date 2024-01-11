@@ -6,7 +6,6 @@
 # Exclude test cases
 gen/
 result.txt
-test-gen.csv
 test-result.csv
 
 # Env

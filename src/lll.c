@@ -3,50 +3,59 @@
 #include <stdlib.h>
 
 #include "vector.h"
-#include "vector2d.h"
+#include "matrix.h"
 #include "gram_schmidt.h"
 
+// Macro to calculate max of two values
 #define max_int(x, y) (((x) >= (y)) ? (x) : (y))
 
-void size_reduce_bk(Vector2D *B, Vector2D *mu, const int dim, const int k) {
+// Size reduction of vector Bk
+void size_reduce_bk(Matrix B, Matrix mu, const int dim, const int k) {
     for (int j = k - 1; j >= 0; j--) {
-        if (fabs(mu->v[k]->e[j]) > 0.5) {
-            __int64_t mu_rounded = (__int64_t) round(mu->v[k]->e[j]);
+        if (fabs(mu[k][j]) > 0.5) {
+            __int64_t mu_rounded = (__int64_t)round(mu[k][j]);
 
-            // Update bk
+            // Update Bk
             for (int i = 0; i < dim; i++) {
-                B->v[k]->e[i] -= mu_rounded * B->v[j]->e[i];
+                B[k][i] -= mu_rounded * B[j][i];
             }
 
             // Update mu values without recomputing GS_info
-            mu->v[k]->e[j] -= mu_rounded;
+            mu[k][j] -= mu_rounded;
             for (int i = 0; i < j; i++) {
-                mu->v[k]->e[i] -= mu_rounded * mu->v[j]->e[i];
+                mu[k][i] -= mu_rounded * mu[j][i];
             }
         }
     }
 }
 
+void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim) {
+    // Extract B-star and mu matrices for code readability
+    Matrix Bs = gs_info->Bs;
+    Matrix mu = gs_info->mu;
 
-void LLL(Vector2D *B, GS_Info *gs_info, const double delta, const int dim) {
-    Vector2D *Bs = gs_info->Bs;
-    Vector2D *mu = gs_info->mu;
-
+    // Store certain inner-products
     long double inner_products[dim];
+
+    // Stores if GS was recomputed on the previous iteration
     int first_iter = 1;
 
     int k = 1;
     while (k < dim) {
         size_reduce_bk(B, mu, dim, k);
 
-        long double ip_Bs_k = inner_product(Bs->v[k], Bs->v[k], dim);
-        long double lovasz = (delta - (mu->v[k]->e[k-1]) * (mu->v[k]->e[k-1]));
+        // This could be simplified however this is an optimisation,
+        // In between gram_schmidt calls, the values of B-star do not change
+        // This means ip_Bs_k on one iteration will be ip_Bs_k-1 on the next
+        // because k increments
+        long double ip_Bs_k = inner_product(Bs[k], Bs[k], dim);
+        long double lovasz = (delta - (mu[k][k - 1]) * (mu[k][k - 1]));
         long double ip_Bs_k_1;
         if (first_iter == 1) {
-            ip_Bs_k_1 = inner_product(Bs->v[k-1], Bs->v[k-1], dim);
+            ip_Bs_k_1 = inner_product(Bs[k - 1], Bs[k - 1], dim);
             first_iter = 0;
         } else {
-            ip_Bs_k_1 = inner_products[k-1];
+            ip_Bs_k_1 = inner_products[k - 1];
         }
 
         if (ip_Bs_k > lovasz * ip_Bs_k_1) {
@@ -57,18 +66,18 @@ void LLL(Vector2D *B, GS_Info *gs_info, const double delta, const int dim) {
             k += 1;
         } else {
             // Swap B_k and B_k-1
-            Vector *temp = B->v[k];
-            B->v[k] = B->v[k-1];
-            B->v[k-1] = temp;
+            Vector temp = B[k];
+            B[k] = B[k - 1];
+            B[k - 1] = temp;
 
             // Recompute GS_info
-            gram_schmidt_in_place(B, gs_info, dim);
+            gram_schmidt(B, gs_info, dim);
 
             // Signal that GS has been recomputed
             first_iter = 1;
 
             // Next k
-            k = max_int(k-1, 1);
+            k = max_int(k - 1, 1);
         }
     }
 }
