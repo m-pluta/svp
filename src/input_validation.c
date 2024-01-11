@@ -80,7 +80,8 @@ int parseInput(Matrix B, const int dim, int num_args, char *args[]) {
 
         // No closing bracket where it was expected
         if (curr_e == dim - 1 && !closing_bracket) {
-            printf("Invalid Input: Vector %d is not the correct dimension, expected size: %d\n", curr_v + 1, dim);
+            printf("Invalid Input: Vector %d is not the correct "
+                   "dimension, expected size: %d\n", curr_v + 1, dim);
             return 1;
         }
 
