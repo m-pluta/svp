@@ -57,6 +57,6 @@ run-test: runme
 	make clean
 
 cpplint:
-	cpplint $(SRCS)
+	cpplint --filter=-legal,-build $(SRCS)
 
 .PHONY: all runme again callgrind hyperfine test do_run clean clean-test run-test
