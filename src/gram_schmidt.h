@@ -6,6 +6,7 @@
 typedef struct {
     Matrix mu;
     Matrix Bs;
+    double* inner_products;
 } GS_Info;
 
 GS_Info *mallocGS_Info(const int dim);

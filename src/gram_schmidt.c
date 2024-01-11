@@ -30,12 +30,24 @@ GS_Info *mallocGS_Info(const int dim) {
         printf("Failed to malloc Matrix: Bs");
         return NULL;
     }
+
+    // Attempt to malloc the inner_products array for memoisation
+    gs_info->inner_products = malloc(dim * sizeof(double));
+    if (gs_info->inner_products == NULL) {
+        free(gs_info->mu);
+        free(gs_info->Bs);
+        free(gs_info);
+        printf("Failed to malloc inner products array");
+        return NULL;
+    }
+
     return gs_info;
 }
 
 void freeGSInfo(GS_Info *gs_info, const int dim) {
     freeMatrix(gs_info->mu, dim);
     freeMatrix(gs_info->Bs, dim);
+    free(gs_info->inner_products);
     free(gs_info);
     gs_info = NULL;
 }
@@ -46,7 +58,7 @@ void gram_schmidt(Matrix B, GS_Info *gs_info, const int dim) {
     Matrix mu = gs_info->mu;
 
     // Memoise the inner products throughout execution for performance
-    double inner_products[dim];
+    double* inner_products = gs_info->inner_products;
 
     for (int i = 0; i < dim; i++) {
         // Copy Basis into Bs

@@ -47,7 +47,7 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
     int last_non_zero = 0;
 
     // Pre-calculate all the inner products - Performance
-    double inner_products[dim];
+    double* inner_products = gs_info->inner_products;
     for (int i = 0; i < dim; i++) {
         inner_products[i] = inner_product(Bs[i], Bs[i], dim);
     }
