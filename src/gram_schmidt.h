@@ -3,8 +3,7 @@
 
 #include "matrix.h"
 
-typedef struct
-{
+typedef struct {
     Matrix mu;
     Matrix Bs;
 } GS_Info;

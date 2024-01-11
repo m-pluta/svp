@@ -7,25 +7,21 @@
 #include "matrix.h"
 
 // Helper function to calculate ck = -sum_{k+1}^{dim}{mu[i][k] * v[i]}
-double calculate_ck(Matrix mu, int dim, int k, int *v)
-{
+double calculate_ck(Matrix mu, int dim, int k, int *v) {
     double ck = 0;
-    for (int i = k + 1; i < dim; i++)
-    {
+    for (int i = k + 1; i < dim; i++) {
         ck -= mu[i][k] * v[i];
     }
     return ck;
 }
 
-void init_var(int dim, double **p, int **v, double **c, int **w)
-{
+void init_var(int dim, double **p, int **v, double **c, int **w) {
     // Calloc all arrays
     *p = calloc(dim + 1, sizeof(double));
     *v = calloc(dim, sizeof(int));
     *c = calloc(dim, sizeof(double));
     *w = calloc(dim, sizeof(int));
-    if (*p == NULL || *v == NULL || *c == NULL || *w == NULL)
-    {
+    if (*p == NULL || *v == NULL || *c == NULL || *w == NULL) {
         printf("Failed to malloc p, v, c, w");
         free(*p);
         free(*v);
@@ -37,8 +33,7 @@ void init_var(int dim, double **p, int **v, double **c, int **w)
     *v[0] = 1;
 }
 
-double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
-{
+double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
     // Extract B star and mu matrix for code readability
     Matrix Bs = gs_info->Bs;
     Matrix mu = gs_info->mu;
@@ -53,36 +48,27 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
 
     // Pre-calculate all the inner products - Performance
     double inner_products[dim];
-    for (int i = 0; i < dim; i++)
-    {
+    for (int i = 0; i < dim; i++) {
         inner_products[i] = inner_product(Bs[i], Bs[i], dim);
     }
 
-    while (1)
-    {
+    while (1) {
         p[k] = p[k + 1] + ((v[k] - c[k]) * (v[k] - c[k])) * inner_products[k];
 
         // R squared represents the search area
-        if (p[k] < R_2)
-        {
-            if (k == 0)
-            {
+        if (p[k] < R_2) {
+            if (k == 0) {
                 // New shortest vector found
                 R_2 = p[k];
-            }
-            else
-            {
+            } else {
                 k -= 1;
                 c[k] = calculate_ck(mu, dim, k, v);
                 v[k] = round(c[k]);
                 w[k] = 1;
             }
-        }
-        else
-        {
+        } else {
             k += 1;
-            if (k == dim)
-            {
+            if (k == dim) {
                 // Optimal solution found
                 free(p);
                 free(v);
@@ -97,21 +83,15 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2)
                 return sqrt(R_2);
             }
 
-            if (k >= last_non_zero)
-            {
+            if (k >= last_non_zero) {
                 last_non_zero = k;
                 v[k] += 1;
-            }
-            else
-            {
+            } else {
                 // This is the zig-zag search that starts at v[k] and then
                 // zig-zags +-1, +-2, +-3, etc to find a more optimal solution
-                if (v[k] > c[k])
-                {
+                if (v[k] > c[k]) {
                     v[k] -= w[k];
-                }
-                else
-                {
+                } else {
                     v[k] += w[k];
                 }
                 // Extend length of the zig-zag
