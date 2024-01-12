@@ -9,15 +9,32 @@ Word Count: 750
 
 == Approach
 
+This task seemed quite daunting at first, however I very quickly became fully immersed in this challenge. My approach stemmed entirely from my initial research into the most common methods of solving SVP. The three main approaches
+
+- *Enumeration*
+- *Sieving*
+- *Voronoi*
+
+== Chosen Algorithm
+
+While all of the above methods are valid ways of solving SVP they each had their own caveats. 
+- Enumeration is 
+
+Focus of exactness
 
 
-=== Chosen Algorithm
+All different combos
+
 
 == Accuracy
 
-== Time
+Double vs Long Double
 
-== Memory
+== Time & Memory
+
+Memoisation
+
+Delta
 
 == Overall Success
 
