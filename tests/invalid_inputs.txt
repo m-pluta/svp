@@ -1,0 +1,25 @@
+[1 2 3] [4 5 6 7 8 9];                      # No closing bracket where expected
+[1 2 3] [4 5 6 7] [8 9];                    # No closing bracket where expected
+[1 2 3] [4 5] [6 7 8 9];                    # Unexpected closing bracket
+[1 2 3] [4 5 6] [7 8 9];                    # Linearly Dependent
+[1 2 3] [4 5 6] [7 8 9];                    # Linearly Dependent
+[0];                                        # Invalid Basis
+[1] [2 3]                                   # Invalid Basis dimension
+[1 2 3] [1]                                 # Invalid Basis dimension
+[1 0] [0 0];                                # Not a full-rank matrix
+[-1.0 0] [1 0];                             # Linearly Dependent
+1 2] [5 1];                                 # No opening bracket where expected
+[1 2] 3 4];                                 # No opening bracket where expected
+[1 0 0 0] [0 1] [2 1] [5 5 7 2] [1 5 3 6];  # Too many vectors and unexpected closing bracket
+[1 [0] [0 [1];                              # Combination
+[1 4] [5 6]];                               # Combination
+[[[[1 4] [5 6];                             # Combination
+;                                           # No input
+[];                                         # Single empty bracket
+[] [];                                      # Multiple empty brackets
+[[] []];                                    # Nested empty brackets
+a;                                          # Single alphabetic character
+a b c d;                                    # Multiple alphabetic characters
+[a 0 0] [0 b 0] [0 0 c];                    # Combination
+[1a 4] [5 6];                               # Alphabetic characters
+[--1 --0 0] [0 1 -0] [0 0 1];               
