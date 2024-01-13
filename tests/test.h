@@ -2,8 +2,7 @@
 #define TEST_H
 
 // Struct to store a test-case
-typedef struct
-{
+typedef struct {
     char *lattice_type;
     int dimension;
     int bit_level;
@@ -11,4 +10,4 @@ typedef struct
     double expected;
 } Testcase;
 
-#endif // TEST_H
+#endif

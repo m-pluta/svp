@@ -40,15 +40,15 @@ int main(int argc, char *argv[]) {
     if (argc == 0) {
         printf("No basis provided\n");
         printf("Usage: %s [x1 y1 ...] [x2 y2 ...] ...\n", argv[0]);
-        return 1;
+        return 2;
     }
 
     // Determine N from the number of arguments passed
     double double_dim = sqrt(argc);
     int dim = round(double_dim);
     if (dim * dim != argc) {
-        printf("Invalid Input: Input basis is not square\n");
-        return 1;
+        printf("Invalid Input\n");
+        return 2;
     }
 
     // Malloc the Basis
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     if (ret_code == 1) {
         // Parsing was unsuccessful
         freeMatrix(B, dim);
-        return 1;
+        return 2;
     }
 
     // Malloc the GS_Info struct and perform Gram Schmidt Procedure
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
         freeMatrix(B, dim);
         freeGSInfo(gs_info, dim);
         printf("Invalid Input: The input vectors are linearly dependent\n");
-        return 1;
+        return 2;
     }
 
     // Perform LLL to get the LLL reduced basis
