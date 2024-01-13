@@ -6,4 +6,4 @@
 
 void LLL(Matrix B, GS_Info *gs_info, const double delta, const int dim);
 
-#endif // LLL_H
+#endif

@@ -5,4 +5,4 @@
 
 double lambda_1_squared(const Matrix Bs, const int dim);
 
-#endif // BOUND_H
+#endif

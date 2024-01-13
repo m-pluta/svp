@@ -5,4 +5,4 @@
 
 double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2);
 
-#endif // SCHORR_EUCHNER_H
+#endif

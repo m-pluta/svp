@@ -11,7 +11,7 @@ OBJS=$(SRCS:.c=.o)
 DEPS=$(OBJS:.o=.d)
 
 # The main target
-all: runme
+all: cpplint runme
 
 # Target to build the executable
 runme: $(OBJS)
@@ -57,6 +57,6 @@ run-test: runme
 	make clean
 
 cpplint:
-	cpplint --filter=-legal,-build $(SRCS)
+	cpplint --filter=-legal,-build,-readability/casting $(SRCS) $(wildcard $(DIR)*.h)
 
 .PHONY: all runme again callgrind hyperfine test do_run clean clean-test run-test
