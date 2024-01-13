@@ -6,109 +6,58 @@
 
 #include "matrix.h"
 
-// Returns 1 if argument is valid
-int isValidArgument(char *c) {
-    while (*c != '\0') {
-        // Check if argument contains only allowed characters
-        if (isdigit(*c) || *c == ']' || *c == '[' ||
-            *c == '.' || *c == '+' || *c == '-') {
-            c++;
-        } else {
-            return 0;
-        }
-    }
-    return 1;
-}
-
 // Returns 1 if parsing encountered an error
-int parseInput(Matrix B, const int dim, int num_args, char *args[]) {
-    // Remove ./runme from args
-    num_args--;
-    args++;
-
-    // Check first arg has an opening bracket
-    if (args[0][0] != '[') {
-        printf("Invalid Input: No opening bracket for first vector\n");
-        return 1;
-    }
-
-    // Check num_args == dim * dim
-    if (num_args != dim * dim) {
-        printf("Invalid Input\n");
-        return 1;
-    }
-
-    // Keep track of which vector is currently being parsed
+int parseInput(Matrix B, const int dim, const int argc, char *argv[]) {
     int curr_v = 0;
     int curr_e = 0;
 
-    for (int i = 0; i < num_args; i++) {
-        char *curr_arg = args[i];
+    for (int i = 0; i < argc; i++) {
+        char* arg = argv[i];
 
-        if (!isValidArgument(curr_arg)) {
-            printf("Argument %d is invalid\n", i + 1);
-        }
-
-        // Assert the presence of opening brackets where expected
-        if (curr_e == 0 && curr_arg[0] != '[') {
-            printf("Missing opening bracket where expected\n");
-            return 1;
-        }
-
-        if (curr_arg[0] == '[') {
-            // Skip first character if its an opening bracket
-            if (curr_e == 0) {
-                curr_arg++;
-
-            // Check if the opening bracket appeared somewhere it shouldn't have
+        if (curr_e == 0) {
+            if (arg[0] == '[') {
+                arg++;
             } else {
-                printf("Invalid Input: Unexpected opening bracket in vector %d,"
-                       " element %d\n", curr_v + 1, curr_e + 1);
-                return 1;
+                goto invalid_input;
             }
         }
 
-        // Convert to double
         char *pEnd;
-        double parsed_arg = strtod(curr_arg, &pEnd);
+        double res = strtod(arg, &pEnd);
 
-        // Process closing bracket
-        int closing_bracket = pEnd[0] == ']';
-        if (closing_bracket && curr_e == dim - 1) {
-            pEnd++;
+        if (pEnd == arg) {
+            goto invalid_input;
         }
 
-        // No closing bracket where it was expected
-        if (curr_e == dim - 1 && !closing_bracket) {
-            printf("Invalid Input: Vector %d is not the correct "
-                   "dimension, expected size: %d\n", curr_v + 1, dim);
-            return 1;
+        B[curr_v][curr_e] = res;
+
+        if (curr_e == dim - 1) {
+            if (pEnd[0] == ']') {
+                pEnd++;
+                curr_v++;
+                curr_e = 0;
+            } else {
+                goto invalid_input;
+            }
+        } else {
+            curr_e++;
         }
 
-        // There is still more to parse, so must be invalid input
         if (pEnd[0] != '\0') {
-            printf("Invalid Input\n");
-            return 1;
-        }
-
-        // Store the parsed value
-        B[curr_v][curr_e] = parsed_arg;
-
-        // Move to next position to parse into
-        curr_e++;
-        if (curr_e == dim) {
-            curr_v++;
-            curr_e = 0;
+            goto invalid_input;
         }
     }
 
     // If user entered [0] or [0.0] etc then this is handled
     if (dim == 1 && B[0][0] == 0) {
-        printf("Invalid Input: Not a basis\n");
-        return 1;
+        goto invalid_input;
     }
 
     return 0;
+
+    invalid_input:
+    printf("Invalid Input\n");
+    return 1;
 }
 
 // Returns 1 if linearly dependent

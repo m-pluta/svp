@@ -3,7 +3,7 @@
 
 #include "matrix.h"
 
-int parseInput(Matrix B, const int dim, const int num_args, char *args[]);
+int parseInput(Matrix B, const int dim, const int argc, char *argv[]);
 int isLinearlyDependent(Matrix Bs, const int dim);
 
 #endif
