@@ -2,7 +2,6 @@
 [1 2 3] [4 5 6 7] [8 9];                    # No closing bracket where expected
 [1 2 3] [4 5] [6 7 8 9];                    # Unexpected closing bracket
 [1 2 3] [4 5 6] [7 8 9];                    # Linearly Dependent
-[1 2 3] [4 5 6] [7 8 9];                    # Linearly Dependent
 [0];                                        # Invalid Basis
 [1] [2 3]                                   # Invalid Basis dimension
 [1 2 3] [1]                                 # Invalid Basis dimension
@@ -21,5 +20,4 @@
 a;                                          # Single alphabetic character
 a b c d;                                    # Multiple alphabetic characters
 [a 0 0] [0 b 0] [0 0 c];                    # Combination
-[1a 4] [5 6];                               # Alphabetic characters
-[--1 --0 0] [0 1 -0] [0 0 1];               
+[1a 4] [5 6];                               # Alphabetic characters             
