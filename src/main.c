@@ -12,7 +12,7 @@ void writeResultToFile(const double result) {
     // Open result file and output shortest norm with 12dp precision
     FILE *file = fopen("result.txt", "w");
     if (file != NULL) {
-        fprintf(file, "%.12f", result);
+        fprintf(file, "%.20f", result);
         fclose(file);
     } else {
         perror("Unable to open 'result.txt' for writing");
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     // Perform LLL to get the LLL reduced basis
     // Perform a subsequent GS to update
-    LLL(B, gs_info, 0.75, N);
+    LLL(B, gs_info, 0.99, N);
     gram_schmidt(B, gs_info, N);
 
     // Calculate the Minkowski Bound
