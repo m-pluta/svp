@@ -51,12 +51,12 @@ clean-test-result:
 	rm -rf $(TEST_DIR)test-result.csv
 
 # Requires 'fplll' and 'bc' commands in bash
-run-test: runme
+big-test: runme
 	python3 $(TEST_DIR)test-gen-all.py
 	python3 $(TEST_DIR)test-run.py
 	make clean
-
+	
 cpplint:
-	cpplint --filter=-legal,-build,-readability/casting $(SRCS) $(wildcard $(DIR)*.h)
+	cpplint --filter=-legal,-build,-readability/casting $(wildcard $**/*.[c,h])
 
-.PHONY: all runme again callgrind hyperfine test do_run clean clean-test run-test
+.PHONY: all runme again callgrind hyperfine memory test clean clean-test-result big-test cpplint
