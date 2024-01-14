@@ -21,8 +21,6 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
-fig.suptitle("Effects of memoisation on algorithm runtime")
-
 titles = ["LLL + SE, Non-memoised, Uniform lattices",
           "LLL + SE, Delta=0.99, Knapsack lattices"]
 

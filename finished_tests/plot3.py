@@ -19,9 +19,7 @@ for (title, pos, df) in dfs:
     
     
 # Create a 2x3 subplots figure
-fig, axes = plt.subplots(2, 3, figsize=(16, 9))
-
-fig.suptitle("Accuracy of various algorithm configurations vs Dimension")
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
 
 for i, (title, pos, df)  in enumerate(dfs):
     if i != 5:  # Skip axes[5]

@@ -17,7 +17,6 @@ mad_long_double = df_long_double.groupby('dimension').apply(
 
 # Create subplots
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
-fig.suptitle('Max Absolute Difference vs Dimension using two different variable types')
 
 # Plot for double precision
 axes[0].plot(mad_double.index, mad_double.values, marker='o', color='cornflowerblue')
