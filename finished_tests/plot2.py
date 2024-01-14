@@ -20,10 +20,10 @@ fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 fig.suptitle('Max Absolute Difference per dimension')
 
 # Plot for double precision
-axes[0].plot(mad_double.index, mad_double.values, marker='o', color='blue')
+axes[0].plot(mad_double.index, mad_double.values, marker='o', color='cornflowerblue')
 axes[0].set_xlabel('Dimension')
 axes[0].set_ylabel('Max Absolute Difference')
-axes[0].set_title('LLL + SE with Double Precision')
+axes[0].set_title('LLL + SE, with Double Precision')
 axes[0].set_ylim(0, 3.5e-5)
 axes[0].grid(True)
 
@@ -32,12 +32,10 @@ axes[1].plot(mad_long_double.index, mad_long_double.values,
              marker='o', color='orange')
 axes[1].set_xlabel('Dimension')
 axes[1].set_ylabel('Max Absolute Difference')
-axes[1].set_title('LLL + SE with Long Double Precision')
+axes[1].set_title('LLL + SE, with Long Double Precision')
 axes[1].set_ylim(0, 3.5e-5)
 axes[1].grid(True)
 
-
+plt.savefig(f"report/max_absolute_difference_plot.png")
 plt.tight_layout()
-
-plt.savefig(f"{DIR}max_absolute_difference_plot.png")
 plt.show()

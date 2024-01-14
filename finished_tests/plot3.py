@@ -6,11 +6,11 @@ import seaborn as sns
 DIR = 'finished_tests/'
 
 dfs = [
-    ['LLL Delta=0.75', 'upper right', pd.read_csv(f"{DIR}LLL_75_double.csv")],
-    ['LLL Delta=0.99', 'lower left', pd.read_csv(f"{DIR}LLL_99_double.csv")],
-    ['LLL + SE Delta=0.75', 'lower left', pd.read_csv(f"{DIR}LLLSE_75_double.csv")],
-    ['LLL + SE Delta=0.99', 'lower left', pd.read_csv(f"{DIR}LLLSE_99_double.csv")],
-    ['SE', 'center left', pd.read_csv(f"{DIR}SE_double.csv")]]
+    ['LLL only, Delta=0.75', 'upper right', pd.read_csv(f"{DIR}LLL_75_double.csv")],
+    ['LLL only, Delta=0.99', 'lower left', pd.read_csv(f"{DIR}LLL_99_double.csv")],
+    ['LLL + SE, Delta=0.75', 'lower left', pd.read_csv(f"{DIR}LLLSE_75_double.csv")],
+    ['LLL + SE, Delta=0.99', 'lower left', pd.read_csv(f"{DIR}LLLSE_99_double.csv")],
+    ['SE only', 'center', pd.read_csv(f"{DIR}SE_double.csv")]]
 
 for (title, pos, df) in dfs:
     df['actual_answer'] = pd.to_numeric(df['actual_answer'], errors='coerce')
@@ -20,6 +20,8 @@ for (title, pos, df) in dfs:
     
 # Create a 2x3 subplots figure
 fig, axes = plt.subplots(2, 3, figsize=(16, 9))
+
+fig.suptitle("Accuracy of multiple algorithms vs Dimension")
 
 for i, (title, pos, df)  in enumerate(dfs):
     if i != 5:  # Skip axes[5]
@@ -36,8 +38,8 @@ for i, (title, pos, df)  in enumerate(dfs):
 axes[1, 2].set_visible(False)
 
 # Add a gap between the two rows in the subplots
-plt.subplots_adjust(hspace=0.4)
+plt.subplots_adjust(hspace=0.3)
 
-plt.savefig(f"{DIR}algorithms_comparison.png")
+plt.savefig(f"report/algorithms_comparison.png")
 
 plt.show()
