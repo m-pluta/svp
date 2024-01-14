@@ -21,28 +21,30 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
+fig.suptitle('Effects of memoisation on number of bytes read from memory')
+
 titles = ["LLL + SE, Delta=0.99, Uniform lattices",
           "LLL + SE, Delta=0.99, Knapsack lattices"]
 
 # Plotting
 for i, (name, df) in enumerate(dataframes.items()):
     ax = axs[0]
-    sns.scatterplot(data=df[df['lattice_type'] == 'Uniform'], x="dimension", y=np.log10(
-        df["reads"]), ax=ax, alpha=0.4)
+    sns.scatterplot(data=df[df['lattice_type'] == 'Uniform'], x="dimension",
+                    y=np.log10(df["reads"]), ax=ax, alpha=0.4)
     ax.set_title(titles[0])
     ax.set_xlabel("Dimension")
     ax.set_ylabel("Log(Number of bytes read)")
-    ax.legend(labels = ['Non-memoised', 'Memoised'])
-    
+    ax.legend(labels=['Non-memoised', 'Memoised'])
+
 # Plotting
 for i, (name, df) in enumerate(dataframes.items()):
     ax = axs[1]
-    sns.scatterplot(data=df[df['lattice_type'] == 'Knapsack'], x="dimension", y=np.log10(
-        df["reads"]), ax=ax, alpha=0.4)
+    sns.scatterplot(data=df[df['lattice_type'] == 'Knapsack'], x="dimension",
+                    y=np.log10(df["reads"]), ax=ax, alpha=0.4)
     ax.set_title(titles[1])
     ax.set_xlabel("Dimension")
     ax.set_ylabel("Log(Number of bytes read)")
-    ax.legend(labels = ['Non-memoised', 'Memoised'])
+    ax.legend(labels=['Non-memoised', 'Memoised'])
 
 plt.tight_layout()
 

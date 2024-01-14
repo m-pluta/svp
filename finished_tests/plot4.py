@@ -21,6 +21,8 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
+fig.suptitle("Effects of memoisation on algorithm runtime")
+
 titles = ["LLL + SE, Non-memoised, Uniform lattices",
           "LLL + SE, Delta=0.99, Knapsack lattices"]
 
@@ -31,7 +33,7 @@ for i, (name, df) in enumerate(dataframes.items()):
         df["median"]*1000), ax=ax, alpha=0.4)
     ax.set_title(titles[0])
     ax.set_xlabel("Dimension")
-    ax.set_ylabel("Log(Median Time in ms)")
+    ax.set_ylabel("log(Median Time in ms)")
     ax.legend(labels = ['Non-memoised', 'Memoised'])
     ax.set_ylim([-1, 3])
 
@@ -42,7 +44,7 @@ for i, (name, df) in enumerate(dataframes.items()):
         df["median"]*1000), ax=ax, alpha=0.4)
     ax.set_title(titles[1])
     ax.set_xlabel("Dimension")
-    ax.set_ylabel("Log(Median Time in ms)")
+    ax.set_ylabel("log(Median Time in ms)")
     ax.legend(labels = ['Non-memoised', 'Memoised'])
     ax.set_ylim([-1, 3])
 
@@ -50,6 +52,3 @@ plt.tight_layout()
 
 plt.savefig(f"report/time_dimension_mem.png")
 plt.show()
-
-mean_times = [df["mean"].mean() for df in dataframes.values()]
-print(mean_times)

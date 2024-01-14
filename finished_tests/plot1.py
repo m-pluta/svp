@@ -21,6 +21,8 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
+fig.suptitle("Effects of changing delta on median runtime of LLL + SE")
+
 titles = ["LLL + SE, Delta=0.75",
           "LLL + SE, Delta=0.99"]
 
