@@ -5,14 +5,15 @@ import csv
 import sys
 import re
 
+NAME = 'SE_double'
 TEST_DIR = 'tests/'
 TEST_FILE = os.path.join(TEST_DIR, 'test-gen.csv')
-RESULT_FILE = os.path.join(TEST_DIR, 'test-result.csv')
+RESULT_FILE = os.path.join(TEST_DIR, f'{NAME}.csv')
 
-TIMEOUT = 60
+SCRIPT = f'./{NAME}'
+TIMEOUT = 300
 HYPERFINE_WARMUP = 0
-MIN_RUNS = 5
-MAX_RUNS = 10
+RUNS = 5
 HYPERFINE_FILE = os.path.join(TEST_DIR, 'hyperfine.csv')
 VALGRIND_FILE = os.path.join(TEST_DIR, 'valgrind.csv')
 
@@ -47,11 +48,10 @@ def remove_hyperfine_file():
 def run_hyperfine(lattice: str):
     command = ['hyperfine',
                '--warmup', str(HYPERFINE_WARMUP),
-               '--min-runs', str(MIN_RUNS),
-               '--max-runs', str(MAX_RUNS),
+               '--runs', str(RUNS),
                '-u', 'second',
                '--export-csv', HYPERFINE_FILE,
-               f'./runme {lattice}']
+               f'{SCRIPT} {lattice}']
 
     try:
         subprocess.run(command, check=True, capture_output=True,
@@ -77,7 +77,7 @@ def run_hyperfine(lattice: str):
         return ['ERROR']
     
 def run_valgrind(lattice: str):
-    command = ['valgrind', '--tool=dhat', './runme', *lattice.split()]
+    command = ['valgrind', '--tool=dhat', SCRIPT, *lattice.split()]
 
     try:
         valgrind = subprocess.run(command, capture_output=True,
@@ -92,8 +92,8 @@ def run_valgrind(lattice: str):
 
         # Extract the values
         values = pattern.findall(valgrind.stderr)
-        for value in values:
-            value = value.replace(',', '')
+        for i, value in enumerate(values):
+            values[i] = value.replace(',', '')
 
         return values
     except subprocess.TimeoutExpired:
@@ -106,7 +106,7 @@ def run_valgrind(lattice: str):
 
 def run(lattice: str):
     try:
-        subprocess.run(['./runme', *lattice.split(' ')],
+        subprocess.run([SCRIPT, *lattice.split(' ')],
                        check=True, timeout=TIMEOUT)
 
         with open('result.txt', 'r') as result_file:

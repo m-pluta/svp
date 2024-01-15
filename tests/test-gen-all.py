@@ -16,14 +16,14 @@ def reset_output_csv():
 def generate_tests():
     tests = []
 
-    for dim in range(1, 51):
+    for dim in range(1, 41):
         for bit_level in (32,):
-            for _ in range(30 if dim <= 20 else 10):
+            for _ in range(40 if dim <= 20 else 20 if dim <= 30 else 5):
                 tests.append((str(random.getrandbits(32)), 'u', str(dim), str(bit_level)))
 
-    for dim in range(2, 51):
+    for dim in range(2, 41):
         for bit_level in (32,):
-            for _ in range(30 if dim <= 20 else 10 if dim <= 40 else 5):
+            for _ in range(40 if dim <= 20 else 20 if dim <= 30 else 5):
                 tests.append((str(random.getrandbits(32)), 'r', str(dim), str(bit_level)))
 
     return tests
