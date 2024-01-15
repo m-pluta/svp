@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import pandas as pd
 
 DIR = 'finished_tests/'
 
@@ -22,7 +23,7 @@ for name, df in dataframes.items():
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
 titles = ["LLL + SE, Uniform lattices",
-          "LLL + SE, Knapsack lattices"]
+          "LLL + SE, Delta=0.99, Knapsack lattices"]
 
 # Plotting
 for i, (name, df) in enumerate(dataframes.items()):
@@ -46,7 +47,4 @@ for i, (name, df) in enumerate(dataframes.items()):
     ax.legend(labels = ['Non-memoised', 'Memoised'])
     ax.set_ylim([-1, 3])
 
-plt.tight_layout()
 
-plt.savefig(f"report/time_dimension_mem.png")
-plt.show()

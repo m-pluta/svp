@@ -44,3 +44,30 @@ plt.savefig(f"report/time_dimension_delta.png")
 plt.show()
 
 
+means = [[], [], [], []]
+for i, name in enumerate(["LLLSE_75_double", "LLLSE_99_double"]):
+    for j, type in enumerate(['Uniform', 'Knapsack']):
+        df = dataframes[name]
+        df = df[df['lattice_type'] == type]
+        mean = df.groupby("dimension")["median"].mean()
+        means[2 * i + j].append(mean)
+
+# Output means to a file
+for i, mean in enumerate(means):
+    df = pd.DataFrame(mean)
+    df = df.transpose()
+    
+means = [list(mean) for mean in means]
+
+print(means)
+
+
+# Output means to an Excel file
+excel_file_path = "report/means.xlsx"
+with pd.ExcelWriter(excel_file_path) as writer:
+    for i, mean in enumerate(means):
+        df = pd.DataFrame(mean)
+        df = df.transpose()
+        df.to_excel(writer, sheet_name=f"Mean {i+1}")
+
+
