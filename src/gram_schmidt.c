@@ -10,7 +10,7 @@ GS_Info *mallocGS_Info(const int dim) {
     // Malloc the struct
     GS_Info *gs_info = malloc(sizeof(GS_Info));
     if (gs_info == NULL) {
-        printf("Failed to malloc Gram_Schmidt_Information");
+        printf("Failed to malloc Gram_Schmidt_Information\n");
         return NULL;
     }
 
@@ -18,7 +18,7 @@ GS_Info *mallocGS_Info(const int dim) {
     gs_info->mu = mallocMatrix(dim);
     if (gs_info->mu == NULL) {
         free(gs_info);
-        printf("Failed to malloc Matrix: mu");
+        printf("Failed to malloc Matrix: mu\n");
         return NULL;
     }
 
@@ -27,7 +27,7 @@ GS_Info *mallocGS_Info(const int dim) {
     if (gs_info->Bs == NULL) {
         free(gs_info->mu);
         free(gs_info);
-        printf("Failed to malloc Matrix: Bs");
+        printf("Failed to malloc Matrix: Bs\n");
         return NULL;
     }
 
@@ -37,7 +37,7 @@ GS_Info *mallocGS_Info(const int dim) {
         free(gs_info->mu);
         free(gs_info->Bs);
         free(gs_info);
-        printf("Failed to malloc inner products array");
+        printf("Failed to malloc inner products array\n");
         return NULL;
     }
 

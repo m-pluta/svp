@@ -8,7 +8,7 @@ Vector mallocVector(const int dim) {
     // Allocate space for `dim` elements in the vector
     Vector v = malloc(dim * sizeof(double));
     if (v == NULL) {
-        printf("Failed to malloc Vector");
+        printf("Failed to malloc Vector\n");
         return NULL;
     }
     return v;

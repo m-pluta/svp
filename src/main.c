@@ -16,7 +16,7 @@ void writeResultToFile(const double result) {
         fprintf(file, "%.20f", result);
         fclose(file);
     } else {
-        perror("Unable to open 'result.txt' for writing");
+        perror("Unable to open 'result.txt' for writing\n");
     }
 }
 
@@ -40,21 +40,21 @@ int main(int argc, char *argv[]) {
     if (argc == 0) {
         printf("No basis provided\n");
         printf("Usage: %s [x1 y1 ...] [x2 y2 ...] ...\n", argv[0]);
-        return 2;
+        return 1;
     }
 
     // Determine N from the number of arguments passed
     double double_dim = sqrt(argc);
     int dim = round(double_dim);
     if (dim * dim != argc) {
-        printf("Invalid Input\n");
-        return 2;
+        printf("Invalid number of arguments: not a square basis\n");
+        return 1;
     }
 
     // Malloc the Basis
     Matrix B = mallocMatrix(dim);
     if (B == NULL) {
-        printf("Failed to malloc Matrix: B");
+        printf("Failed to malloc Matrix: B\n");
         return 1;
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
     if (ret_code == 1) {
         // Parsing was unsuccessful
         freeMatrix(B, dim);
-        return 2;
+        return 1;
     }
 
     // Malloc the GS_Info struct and perform Gram Schmidt Procedure
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
         freeMatrix(B, dim);
         freeGSInfo(gs_info, dim);
         printf("Invalid Input: The input vectors are linearly dependent\n");
-        return 2;
+        return 1;
     }
 
     // Perform LLL to get the LLL reduced basis

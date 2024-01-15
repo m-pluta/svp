@@ -22,7 +22,7 @@ void init_var(int dim, double **p, int **v, double **c, int **w) {
     *c = calloc(dim, sizeof(double));
     *w = calloc(dim, sizeof(int));
     if (*p == NULL || *v == NULL || *c == NULL || *w == NULL) {
-        printf("Failed to malloc p, v, c, w");
+        printf("Failed to malloc p, v, c, w\n");
         free(*p);
         free(*v);
         free(*c);
