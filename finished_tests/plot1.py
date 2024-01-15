@@ -21,8 +21,8 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
-titles = ["LLL + SE, Delta=0.75",
-          "LLL + SE, Delta=0.99"]
+titles = ["Delta=0.75",
+          "Delta=0.99"]
 
 # Plotting
 for i, (name, df) in enumerate(dataframes.items()):

@@ -5,7 +5,7 @@
 \
 Michal
 \
-Word Count: 750
+Word Count: 742
 
 #set align(left)
 
@@ -36,20 +36,14 @@ While Sieving was conceptually the most intuitive, I found that Enumeration was 
 
 Asymptotically, the time complexity of Enumeration is much worse than Sieving or Voronoi, however, empirical evidence suggests that for low-dimensions Enumeration outperforms them. Additionally, Enumeration has polynomial space complexity which is much better than Sieving and Voronoi. 
 
-Voronoi is a very interesting way to solve this problem though.
 
-\
-
-Lacking prior experience in C, My initial focus was getting a proof-of-concept working in Python. 
-
-I found many basis-reduction algorithms, and while BKZ is most-commonly used, I struggled to implement it and instead implemented LLL.
-
-\
 == Accuracy
 
-A big worry of this assignment were floating point inaccuracies. I didn't know how big the inaccuracies would be, hence I opted for C's built-in `double`.
+A big worry of this assignment were floating point inaccuracies, hence I initially chose C's built-in `double`.
 
-Arbitrarily, I set an accuracy threshold of $T=5 dot 10^(-5)$.
+Arbitrarily, I set an accuracy threshold, $T$ where
+
+$ T=5 dot 10^(-5) $
 
 This meant that if
 
@@ -57,13 +51,17 @@ $ |"Expected result" - "Actual result"| <= T $
 
 then I would consider my result as correct.
 
-I found this to be a better metric than percentage difference as it ensured correct results were closely aligned with the actual answer, unaffected by the result's magnitude.
+I found this to be a better metric than percentage difference as it ensured correct results were closely aligned with the actual answer, and unaffected by the result's magnitude.
 
 I generated test lattices using `latticegen` from the `fplll` library @fplll_2023. It is often referred to as the best lattice-based solver available, hence I trusted its answers. I made multiple bash & python scripts to automate test generation, and focused on uniform & knapsack-like lattices.
 
 #pagebreak()
 
-Once I implemented LLL and Schnorr Euchner enumeration according to pseudocode @Yasuda_Masaya_2021, I began testing different configurations, while varying $delta$.
+Lacking prior experience in C, I decided to begin implementing a prototype in Python. 
+
+I found many basis-reduction algorithms, and while BKZ is most commonly used, I struggled to implement it and instead implemented LLL @Bhattacherjee_Hernandez-Castro_Moyler_2023 @Galbraith_2018 @Cohen_1993.
+
+Once I implemented LLL and Schnorr Euchner enumeration @Yasuda_Masaya_2021 according to pseudocode, I began testing different configurations, while varying $delta$.
 
 #figure(
   image("algorithms_comparison.png", width: 120%),
@@ -84,7 +82,7 @@ This highlighted that:
 
 #pagebreak()
 
-To determine whether `long double` was necessary instead of `double`, I tested my LLL+SE implementation using both.
+To determine whether `long double` was necessary, I tested my implementation using both.
 
 #figure(
   image("max_absolute_difference_plot.png", width: 100%),
@@ -93,7 +91,7 @@ To determine whether `long double` was necessary instead of `double`, I tested m
   ],
 ) <Fig2>
 
-Based on these findings, and considering the coursework's requirements, I concluded it was unnecessary as the accuracy stays within the tolerance $T$. Furthermore, I could not justify the extra memory and computation time needed for `long double` in this context.
+Based on this, and considering the coursework's requirements, I concluded it was unnecessary as the accuracy stayed within the tolerance $T$. Furthermore, I could not justify the extra memory and computation time needed for `long double`.
 
 #pagebreak()
 
@@ -102,7 +100,7 @@ Based on these findings, and considering the coursework's requirements, I conclu
 Upon running `valgrind`'s `callgrind` and feeding the result into `kcachegrind`, it became evident where optimisations would be most beneficial.
 
 #figure(
-  image("kcachegrind.png", width: 100%),
+  image("kcachegrind.png", width: 80%),
   caption: [
     Snippet of function call summary provided by kcachegrind
   ],
@@ -114,21 +112,21 @@ My `schnorr_euchner`, `lll`, and `gram_schmidt` all relied on calculating millio
 \
 #figure(
   ```c
-double inner_product(const Vector v1, const Vector v2, const int dim) {
-    double total = 0;
-    for (int i = 0; i < dim; i++) {
-        total += v1[i] * v2[i];
-    }
-    return total;
-}
+  double inner_product(const Vector v1, const Vector v2, const int dim) {
+      double total = 0;
+      for (int i = 0; i < dim; i++) {
+          total += v1[i] * v2[i];
+      }
+      return total;
+  }
   ```,
-  supplement: [Code sample],
+  supplement: [Code Sample],
   caption: [
     My implentation of the Euclidean Inner Product
   ]
 ) <Code1>
 \
-The only optimisation here was potentially parallelising using multiple threads. This however would only be effective on higher dimensions due to thread overhead.
+The only optimisation here was potentially parallelising using multiple threads, which would only be effective on higher dimensions due to thread overhead.
 
 #pagebreak()
 
@@ -145,7 +143,7 @@ While the graph isn't perfect, it shows that memoising has a positive impact on 
 
 #pagebreak()
 
-I was intrigued by the $delta$ parameter, and decided to investigate more.
+I decided to investigate the $delta$ parameter more:
 
 #figure(
   image("time_dimension_delta.png", width: 100%),
@@ -154,7 +152,7 @@ I was intrigued by the $delta$ parameter, and decided to investigate more.
   ],
 ) <Fig5>
 
-What I found was that for both uniform and knapsack lattices, a higher delta resulted in less variance of run-time, evident by the points being less scattered in @Fig5.
+I found that for both uniform and knapsack lattices, a higher delta resulted in less variance of run-time, evident by times being less scattered (@Fig5).
 
 \
 
@@ -222,13 +220,13 @@ What I found was that for both uniform and knapsack lattices, a higher delta res
 
 \
 
-For dimensions 10-25/30 (@Fig6 and @Fig7), the run-time using $delta = 0.99$ increased due to more iterations inside LLL. However, asymptotically, $delta=0.99$ was experimentally better.
+For dimensions 10-25/30 (@Fig6 and @Fig7), the run-time using $delta = 0.99$ increases due to more iterations inside LLL. However, asymptotically, $delta=0.99$ was better.
 
 #pagebreak()
 
 == Memory
 
-For optimising memory, I used `valgrind` (tools: `massif` and `dhat`) which provided valuable insights that helped me address potential memory leaks and segmentation faults.
+For memory, I used `valgrind` (tools: `massif` and `dhat`) which helped me address potential memory leaks and segmentation faults.
 
 The `memusage` tool was also useful as it gave me a distribution of memory block sizes, and from this, I could pinpoint inefficiencies in my data structures.
 
@@ -240,7 +238,7 @@ The `memusage` tool was also useful as it gave me a distribution of memory block
 ) <Fig8>
 
 \
-From @Fig8 it is clear that memoisation also leads to less memory reads. This is because, by memoising the inner products, the only value being read from memory is the inner product itself, and not component vectors used when computing the inner product.
+From @Fig8 it is clear memoisation leads to less memory reads. This is because, by memoising the inner products, the only value being read from memory is the inner product itself, and not the component vectors needed to compute the inner product.
 
 #figure(
   image("total_bytes_dimension.png", width: 45%),
@@ -249,7 +247,7 @@ From @Fig8 it is clear that memoisation also leads to less memory reads. This is
   ],
 ) <Fig9>
 
-From this, it is clear that 
+@Fig9 shows that
 
 $ "Peak memory" prop ("Dimension")^2 $
 
@@ -257,14 +255,14 @@ which aligns with @Table1 and @Micciancio_2023
 
 \
 
-Looking back at @Fig3, it was also clear that `malloc` and `free` were being called too often.
-This was resolved by initialising my `GS_info` `struct` once at the beginning and then reusing it throughout the entire program's execution.
+From @Fig3, it was also clear that `malloc` and `free` were called too often.
+This was resolved by initialising `GS_Info` at the beginning and then reusing it throughout the program's execution.
 
 #pagebreak()
 
 == Readability
 
-My initial implementation was centered around `struct`s, however since I no longer stored the dimension within each Vector2D, structs were unnecessary.
+My initial implementation was centered around `struct`s, however these were unnecessary and made my code unreadable.
 
 #figure(
   table(
@@ -304,7 +302,7 @@ My initial implementation was centered around `struct`s, however since I no long
   caption: [
     Changes in implementation of `Vector` and `Vector2D`
   ],
-  supplement: [Code sample],
+  supplement: [Sample],
 ) <Code2>
 
 \
@@ -324,6 +322,7 @@ My initial implementation was centered around `struct`s, however since I no long
     for (int k = 0; k < i; k++) {
         double ip = inner_product(B->v[i], Bs->v[k], dim);
         mu->v[i]->e[k] = ip / inner_products[k];
+
         for (int j = 0; j < dim; j++) {
             Bs->v[i]->e[j] -= mu->v[i]->e[k] * Bs->v[k]->e[j];
         }
@@ -336,6 +335,7 @@ My initial implementation was centered around `struct`s, however since I no long
     for (int k = 0; k < i; k++) {
         double ip = inner_product(B[i], Bs[k], dim);
         mu[i][k] = ip / inner_products[k];
+
         for (int j = 0; j < dim; j++) {
             Bs[i][j] -= mu[i][k] * Bs[k][j];
         }
@@ -347,27 +347,25 @@ My initial implementation was centered around `struct`s, however since I no long
   caption: [
     Changes in implementation of projection calculation in Gram Schmidt
   ],
-  supplement: [Code sample],
+  supplement: [Sample],
 ) <Code3>
 
 \
 
-This led to much better readability as evident by @Code2 and @Code3
-
-\
-
-\
-
-\
+This led to much better readability, which @Code3 is a great example of.
 
 \
 \
 \
 \
+\
+\
+\
+
 
 == Conclusion
 
-Overall, I believe my implementation is very fast, and accurate to a high number of dimensions. I am planning to attempt this challenge again with a Domain-Specific Language and with more advanced methods to improve upon the performance.
+Overall, I believe my implementation is quite fast, and accurate to a high number of dimensions. I would like to try this challenge again with a Domain-Specific Language and with more advanced methods to improve upon the performance.
 
 #pagebreak()
 

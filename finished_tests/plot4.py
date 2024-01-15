@@ -22,8 +22,8 @@ for name, df in dataframes.items():
 # Create a 2x2 subplot
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
-titles = ["LLL + SE, Uniform lattices",
-          "LLL + SE, Delta=0.99, Knapsack lattices"]
+titles = ["Uniform lattices",
+          "Knapsack lattices"]
 
 # Plotting
 for i, (name, df) in enumerate(dataframes.items()):
@@ -46,5 +46,9 @@ for i, (name, df) in enumerate(dataframes.items()):
     ax.set_ylabel("log(Median Time in ms)")
     ax.legend(labels = ['Non-memoised', 'Memoised'])
     ax.set_ylim([-1, 3])
+    
+plt.savefig(f"report/time_dimension_mem.png")
+plt.tight_layout()
+plt.show()
 
 
