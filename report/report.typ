@@ -3,9 +3,9 @@
 #set align(center)
 = Balancing Act: Achieving Time and Memory Efficiency in SVP 
 \
-Michal
+Michal Pluta
 \
-Word Count: 742
+Word Count: 746
 
 #set align(left)
 
@@ -41,7 +41,7 @@ Asymptotically, the time complexity of Enumeration is much worse than Sieving or
 
 A big worry of this assignment were floating point inaccuracies, hence I initially chose C's built-in `double`.
 
-Arbitrarily, I set an accuracy threshold, $T$ where
+Arbitrarily, I set an accuracy threshold, $T$, where
 
 $ T=5 dot 10^(-5) $
 
@@ -51,9 +51,9 @@ $ |"Expected result" - "Actual result"| <= T $
 
 then I would consider my result as correct.
 
-I found this to be a better metric than percentage difference as it ensured correct results were closely aligned with the actual answer, and unaffected by the result's magnitude.
+I found this to be a better metric than percentage difference as it ensured correct results were closely aligned with the actual answer, and were unaffected by the result's magnitude.
 
-I generated test lattices using `latticegen` from the `fplll` library @fplll_2023. It is often referred to as the best lattice-based solver available, hence I trusted its answers. I made multiple bash & python scripts to automate test generation, and focused on uniform & knapsack-like lattices.
+I generated test lattices using `latticegen` from the `fplll` library @fplll_2023. It is often referred to as the best lattice-based solver available, hence I trusted its answers. I made multiple bash & python scripts to automate test generation, and focused entirely on uniform & knapsack-like lattices.
 
 #pagebreak()
 
@@ -256,7 +256,7 @@ which aligns with @Table1 and @Micciancio_2023
 \
 
 From @Fig3, it was also clear that `malloc` and `free` were called too often.
-This was resolved by initialising `GS_Info` at the beginning and then reusing it throughout the program's execution.
+This was resolved by initialising the `GS_Info` `struct` at the beginning and then reusing it throughout the program's execution.
 
 #pagebreak()
 
@@ -365,7 +365,7 @@ This led to much better readability, which @Code3 is a great example of.
 
 == Conclusion
 
-Overall, I believe my implementation is quite fast, and accurate to a high number of dimensions. I would like to try this challenge again with a Domain-Specific Language and with more advanced methods to improve upon the performance.
+Overall, I believe my implementation is quite fast, and accurate to a high number of dimensions. I am planning to try this challenge again with a Domain-Specific Language and with more advanced methods to improve upon the performance.
 
 #pagebreak()
 

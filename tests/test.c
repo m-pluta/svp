@@ -83,7 +83,7 @@ int main() {
     // Open test file
     FILE *file = fopen(TEST_FILE, "r");
     if (file == NULL) {
-        perror("Unable to open file");
+        perror("Unable to open file\n");
         return 1;
     }
 
@@ -118,7 +118,7 @@ int main() {
         // Open the result.txt file
         FILE *result_file = fopen(RESULT_FILE, "r");
         if (result_file == NULL) {
-            perror("Unable to open file");
+            perror("Unable to open file\n");
             free(line);
             return 1;
         }
