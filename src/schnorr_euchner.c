@@ -71,11 +71,11 @@ double schorr_euchner(const int dim, const GS_Info *gs_info, double R_2) {
             if (k == dim) {
                 // Optimal solution found
                 // Print out the coefficients of the shortest vector found
-                printf("\n");
-                for (int i = 0; i < dim; i++) {
-                    printf("%d ", v[i]);
-                }
-                printf("\n");
+                // printf("\n");
+                // for (int i = 0; i < dim; i++) {
+                //     printf("%d ", v[i]);
+                // }
+                // printf("\n");
 
                 free(p);
                 free(v);
